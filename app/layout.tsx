@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, Noto_Sans_TC, JetBrains_Mono } from 'next/font/google'
+import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -20,7 +21,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           fontFamily: 'var(--font-inter), var(--font-noto-tc), system-ui, sans-serif',
         }}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
