@@ -3200,16 +3200,14 @@ export async function seedCovers() {
       })
       .select('id')
       .single()
-    await sb
-      .from('cover_links')
-      .insert(
-        f.links.map((l) => ({
-          cover_id: data!.id,
-          platform: l.platform,
-          url: l.url,
-          platform_label: null,
-        })),
-      )
+    await sb.from('cover_links').insert(
+      f.links.map((l) => ({
+        cover_id: data!.id,
+        platform: l.platform,
+        url: l.url,
+        platform_label: null,
+      })),
+    )
   }
 }
 ```
