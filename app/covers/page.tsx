@@ -25,14 +25,14 @@ export default async function CoversPage({
       <div className="mx-auto w-full max-w-[480px]">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm"
         >
           <ArrowLeft className="size-4" /> 回首頁
         </Link>
 
         <div className="mt-4 flex items-baseline justify-between">
           <h1 className="text-2xl font-bold">翻唱</h1>
-          <span className="text-sm font-bold text-primary">{total} 首</span>
+          <span className="text-primary text-sm font-bold">{total} 首</span>
         </div>
 
         <div className="mt-3">
@@ -44,7 +44,7 @@ export default async function CoversPage({
 
         <ul className="mt-4 flex flex-col gap-3">
           {items.length === 0 ? (
-            <li className="rounded-2xl bg-card p-6 text-center text-sm text-muted-foreground">
+            <li className="bg-card text-muted-foreground rounded-2xl p-6 text-center text-sm">
               還沒有符合條件的翻唱
             </li>
           ) : (

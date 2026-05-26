@@ -21,12 +21,12 @@ export function SearchInput({ defaultValue }: { defaultValue?: string }) {
 
   return (
     <form onSubmit={onSubmit} className="relative">
-      <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <Search className="text-muted-foreground absolute top-1/2 left-4 size-4 -translate-y-1/2" />
       <input
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="搜尋歌名或原唱⋯"
-        className="w-full rounded-full bg-card py-2.5 pl-10 pr-4 text-sm shadow-sm outline-none ring-0 placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-ring"
+        className="bg-card placeholder:text-muted-foreground/70 focus:ring-ring w-full rounded-full py-2.5 pr-4 pl-10 text-sm shadow-sm ring-0 outline-none focus:ring-2"
         aria-label="搜尋"
       />
     </form>

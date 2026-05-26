@@ -20,10 +20,10 @@ export function CoverCard({ cover }: { cover: CoverWithLinks }) {
   return (
     <Link
       href={`/covers/${cover.id}`}
-      className="flex gap-3 rounded-2xl bg-card p-3 shadow-sm transition hover:shadow-md"
+      className="bg-card flex gap-3 rounded-2xl p-3 shadow-sm transition hover:shadow-md"
     >
       <div
-        className="size-[60px] shrink-0 rounded-xl bg-muted"
+        className="bg-muted size-[60px] shrink-0 rounded-xl"
         style={
           cover.thumbnail_url
             ? { background: `center/cover no-repeat url('${cover.thumbnail_url}')` }
@@ -32,8 +32,8 @@ export function CoverCard({ cover }: { cover: CoverWithLinks }) {
         aria-hidden
       />
       <div className="min-w-0 flex-1">
-        <div className="truncate font-bold text-card-foreground">{cover.title}</div>
-        <div className="truncate text-xs text-muted-foreground">
+        <div className="text-card-foreground truncate font-bold">{cover.title}</div>
+        <div className="text-muted-foreground truncate text-xs">
           原唱 {cover.original_artist} · {cover.cover_date}
         </div>
         <div className="mt-1.5 flex flex-wrap gap-1.5">
