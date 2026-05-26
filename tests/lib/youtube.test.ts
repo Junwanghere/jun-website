@@ -20,6 +20,8 @@ describe('extractYouTubeId', () => {
 
 describe('youtubeThumbnail', () => {
   it('組合縮圖網址', () => {
-    expect(youtubeThumbnail('abc123XYZ_-')).toBe('https://img.youtube.com/vi/abc123XYZ_-/hqdefault.jpg')
+    expect(youtubeThumbnail('abc123XYZ_-')).toBe(
+      'https://img.youtube.com/vi/abc123XYZ_-/hqdefault.jpg',
+    )
   })
 })
