@@ -78,27 +78,27 @@
 
 ### `covers`（翻唱）
 
-| 欄位 | 型別 | 說明 |
-|---|---|---|
-| id | uuid (pk) | 主鍵 |
-| title | text | 歌名 |
-| original_artist | text | 原唱 |
-| cover_date | date | 翻唱發布日 |
-| thumbnail_url | text, null | 縮圖（Supabase Storage） |
-| description | text, null | 心得／簡介 |
-| tags | text[], null | 類型標籤，供篩選 |
-| created_at | timestamptz | 建立時間 |
-| updated_at | timestamptz | 更新時間 |
+| 欄位            | 型別         | 說明                     |
+| --------------- | ------------ | ------------------------ |
+| id              | uuid (pk)    | 主鍵                     |
+| title           | text         | 歌名                     |
+| original_artist | text         | 原唱                     |
+| cover_date      | date         | 翻唱發布日               |
+| thumbnail_url   | text, null   | 縮圖（Supabase Storage） |
+| description     | text, null   | 心得／簡介               |
+| tags            | text[], null | 類型標籤，供篩選         |
+| created_at      | timestamptz  | 建立時間                 |
+| updated_at      | timestamptz  | 更新時間                 |
 
 ### `cover_links`（平台連結，一首對多筆）
 
-| 欄位 | 型別 | 說明 |
-|---|---|---|
-| id | uuid (pk) | 主鍵 |
-| cover_id | uuid (fk) | 對應 covers.id，刪翻唱時連帶刪（on delete cascade） |
-| platform | text | youtube / instagram / threads / other |
-| platform_label | text, null | platform 為 other 時填，例如 StreetVoice |
-| url | text | 連結 |
+| 欄位           | 型別       | 說明                                                |
+| -------------- | ---------- | --------------------------------------------------- |
+| id             | uuid (pk)  | 主鍵                                                |
+| cover_id       | uuid (fk)  | 對應 covers.id，刪翻唱時連帶刪（on delete cascade） |
+| platform       | text       | youtube / instagram / threads / other               |
+| platform_label | text, null | platform 為 other 時填，例如 StreetVoice            |
+| url            | text       | 連結                                                |
 
 ### 權限（RLS）
 

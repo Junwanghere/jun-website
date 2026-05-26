@@ -98,6 +98,7 @@ jun-website/
 ### Task 1: 用 create-next-app 初始化專案
 
 **Files:**
+
 - Create: 整個專案結構
 
 - [ ] **Step 1: 在 `/Users/junwang/Desktop/projects/jun-website/` 執行 create-next-app**
@@ -145,6 +146,7 @@ git commit -m "chore: scaffold Next.js + TS + Tailwind"
 ### Task 2: 設定 Prettier 與額外 ESLint 規則
 
 **Files:**
+
 - Create: `.prettierrc`
 - Modify: `package.json`（加 lint:format script）
 
@@ -194,6 +196,7 @@ git commit -m "chore: add prettier + tailwind plugin"
 ### Task 3: 安裝設定 Vitest（單元／元件測試）
 
 **Files:**
+
 - Create: `vitest.config.ts`
 - Create: `tests/setup.ts`
 - Modify: `package.json`
@@ -276,6 +279,7 @@ git commit -m "chore: setup vitest + RTL"
 ### Task 4: 安裝設定 Playwright（E2E）
 
 **Files:**
+
 - Create: `playwright.config.ts`
 - Create: `e2e/.gitkeep`
 - Modify: `package.json`
@@ -308,9 +312,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  ],
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 })
 ```
 
@@ -356,6 +358,7 @@ git commit -m "chore: setup playwright"
 ### Task 5: 初始化 shadcn/ui
 
 **Files:**
+
 - Create: `components.json`
 - Create: `components/ui/*`（由 CLI 產生）
 
@@ -366,6 +369,7 @@ pnpm dlx shadcn@latest init
 ```
 
 互動回答：
+
 - TypeScript: yes
 - Style: `Default`
 - Base color: `Slate`（之後會覆寫成莫蘭迪）
@@ -397,6 +401,7 @@ git commit -m "chore: init shadcn/ui + add core components"
 ### Task 6: 替換為莫蘭迪色 token、安裝字體
 
 **Files:**
+
 - Modify: `app/globals.css`
 - Modify: `app/layout.tsx`
 
@@ -405,8 +410,8 @@ git commit -m "chore: init shadcn/ui + add core components"
 完整覆蓋檔案內容：
 
 ```css
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -442,18 +447,18 @@ git commit -m "chore: init shadcn/ui + add core components"
 :root {
   --radius: 1rem;
   /* 莫蘭迪：亮模式 */
-  --background: oklch(0.93 0.005 80);          /* #EAE8E3 淺暖灰 */
-  --foreground: oklch(0.25 0.005 60);          /* #3A3835 近黑灰 */
-  --card: oklch(0.96 0.004 80);                /* #F6F4F0 卡片底 */
+  --background: oklch(0.93 0.005 80); /* #EAE8E3 淺暖灰 */
+  --foreground: oklch(0.25 0.005 60); /* #3A3835 近黑灰 */
+  --card: oklch(0.96 0.004 80); /* #F6F4F0 卡片底 */
   --card-foreground: oklch(0.25 0.005 60);
   --popover: oklch(0.96 0.004 80);
   --popover-foreground: oklch(0.25 0.005 60);
-  --primary: oklch(0.55 0.015 235);            /* #737F84 霧藍灰 */
+  --primary: oklch(0.55 0.015 235); /* #737F84 霧藍灰 */
   --primary-foreground: oklch(0.96 0.004 80);
-  --secondary: oklch(0.90 0.004 80);
+  --secondary: oklch(0.9 0.004 80);
   --secondary-foreground: oklch(0.35 0.005 60);
-  --muted: oklch(0.90 0.004 80);
-  --muted-foreground: oklch(0.58 0.005 60);    /* #8F8A83 */
+  --muted: oklch(0.9 0.004 80);
+  --muted-foreground: oklch(0.58 0.005 60); /* #8F8A83 */
   --accent: oklch(0.55 0.015 235);
   --accent-foreground: oklch(0.96 0.004 80);
   --destructive: oklch(0.55 0.12 25);
@@ -465,25 +470,25 @@ git commit -m "chore: init shadcn/ui + add core components"
 
 .dark {
   /* 莫蘭迪：暗模式 */
-  --background: oklch(0.20 0.005 60);
-  --foreground: oklch(0.90 0.004 80);
+  --background: oklch(0.2 0.005 60);
+  --foreground: oklch(0.9 0.004 80);
   --card: oklch(0.24 0.005 60);
-  --card-foreground: oklch(0.90 0.004 80);
+  --card-foreground: oklch(0.9 0.004 80);
   --popover: oklch(0.24 0.005 60);
-  --popover-foreground: oklch(0.90 0.004 80);
-  --primary: oklch(0.70 0.015 235);
-  --primary-foreground: oklch(0.20 0.005 60);
-  --secondary: oklch(0.30 0.005 60);
+  --popover-foreground: oklch(0.9 0.004 80);
+  --primary: oklch(0.7 0.015 235);
+  --primary-foreground: oklch(0.2 0.005 60);
+  --secondary: oklch(0.3 0.005 60);
   --secondary-foreground: oklch(0.85 0.004 80);
   --muted: oklch(0.28 0.005 60);
   --muted-foreground: oklch(0.65 0.005 60);
-  --accent: oklch(0.70 0.015 235);
-  --accent-foreground: oklch(0.20 0.005 60);
+  --accent: oklch(0.7 0.015 235);
+  --accent-foreground: oklch(0.2 0.005 60);
   --destructive: oklch(0.65 0.12 25);
-  --destructive-foreground: oklch(0.20 0.005 60);
+  --destructive-foreground: oklch(0.2 0.005 60);
   --border: oklch(0.32 0.005 60);
-  --input: oklch(0.30 0.005 60);
-  --ring: oklch(0.70 0.015 235);
+  --input: oklch(0.3 0.005 60);
+  --ring: oklch(0.7 0.015 235);
 }
 
 body {
@@ -550,6 +555,7 @@ git commit -m "feat(theme): morandi color tokens + fonts (Inter / Noto TC / JetB
 ### Task 7: 加入 dark mode 切換（next-themes）
 
 **Files:**
+
 - Create: `components/theme-provider.tsx`
 - Create: `components/theme-toggle.tsx`
 - Modify: `app/layout.tsx`
@@ -624,7 +630,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 
 export default function Home() {
   return (
-    <main className="min-h-dvh flex items-center justify-center">
+    <main className="flex min-h-dvh items-center justify-center">
       <ThemeToggle />
     </main>
   )
@@ -649,6 +655,7 @@ git commit -m "feat(theme): light/dark mode toggle via next-themes"
 ### Task 8: 確認 OrbStack ＋ 安裝 Supabase CLI ＋ 初始化
 
 **Files:**
+
 - Create: `supabase/config.toml`（由 CLI 產生）
 
 - [ ] **Step 1: 確認 OrbStack 已安裝並執行**
@@ -698,6 +705,7 @@ git commit -m "chore(supabase): init local stack via supabase CLI"
 ### Task 9: 環境變數 ＋ Supabase clients
 
 **Files:**
+
 - Create: `.env.local.example`
 - Create: `.env.local`（不進版控）
 - Create: `lib/env.ts`
@@ -800,7 +808,9 @@ export async function updateSession(request: NextRequest) {
     },
   })
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
   return { response, user }
 }
 ```
@@ -819,6 +829,7 @@ git commit -m "feat(supabase): server/browser/middleware clients + env validatio
 ### Task 10: 第一支 migration：covers ＋ cover_links ＋ RLS
 
 **Files:**
+
 - Create: `supabase/migrations/0001_init_covers.sql`
 
 - [ ] **Step 1: 用 CLI 產生空 migration 檔**
@@ -912,6 +923,7 @@ git commit -m "feat(db): init covers + cover_links tables + RLS policies"
 ### Task 11: Storage migration：cover-thumbnails bucket
 
 **Files:**
+
 - Create: `supabase/migrations/0002_storage_thumbnails.sql`
 
 - [ ] **Step 1: 產生 migration 並命名**
@@ -977,6 +989,7 @@ git commit -m "feat(db): storage bucket for cover thumbnails"
 ### Task 13: 登入頁
 
 **Files:**
+
 - Create: `app/login/page.tsx`
 - Create: `app/login/login-form.tsx`
 
@@ -987,11 +1000,11 @@ import { LoginForm } from './login-form'
 
 export default function LoginPage() {
   return (
-    <main className="min-h-dvh flex items-center justify-center px-4">
+    <main className="flex min-h-dvh items-center justify-center px-4">
       <div className="w-full max-w-sm space-y-6">
-        <div className="text-center space-y-1">
+        <div className="space-y-1 text-center">
           <h1 className="text-2xl font-bold">登入後台</h1>
-          <p className="text-sm text-muted-foreground">只有作者本人能進入</p>
+          <p className="text-muted-foreground text-sm">只有作者本人能進入</p>
         </div>
         <LoginForm />
       </div>
@@ -1038,13 +1051,25 @@ export function LoginForm() {
     <form onSubmit={onSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
-        <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Input
+          id="email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="password">密碼</Label>
-        <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+        <Input
+          id="password"
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="text-destructive text-sm">{error}</p>}
       <Button type="submit" disabled={loading} className="w-full">
         {loading ? '登入中⋯' : '登入'}
       </Button>
@@ -1069,6 +1094,7 @@ git commit -m "feat(auth): login page with email + password"
 ### Task 14: middleware 保護 /admin
 
 **Files:**
+
 - Create: `middleware.ts`
 
 - [ ] **Step 1: 建立 `middleware.ts`**
@@ -1105,7 +1131,7 @@ export const config = {
 ```tsx
 // app/admin/page.tsx
 export default function AdminHome() {
-  return <main className="min-h-dvh flex items-center justify-center">已進入後台</main>
+  return <main className="flex min-h-dvh items-center justify-center">已進入後台</main>
 }
 ```
 
@@ -1127,6 +1153,7 @@ git commit -m "feat(auth): protect /admin with middleware + email allowlist"
 ### Task 15: PortalCard 元件 ＋ 元件測試
 
 **Files:**
+
 - Create: `components/portal-card.tsx`
 - Create: `tests/components/portal-card.test.tsx`
 
@@ -1142,12 +1169,7 @@ import { PortalCard } from '@/components/portal-card'
 describe('PortalCard', () => {
   it('顯示 label、title、description、且是連結到 href', () => {
     render(
-      <PortalCard
-        href="/covers"
-        label="COVERS"
-        title="127 首翻唱"
-        description="最新：交換餘生"
-      />,
+      <PortalCard href="/covers" label="COVERS" title="127 首翻唱" description="最新：交換餘生" />,
     )
     const link = screen.getByRole('link', { name: /127 首翻唱/ })
     expect(link).toHaveAttribute('href', '/covers')
@@ -1191,10 +1213,10 @@ export function PortalCard({ href, label, title, description, featured }: Props)
     <Link
       href={href}
       className={cn(
-        'group block rounded-2xl px-5 py-4 transition shadow-sm hover:shadow-md',
+        'group block rounded-2xl px-5 py-4 shadow-sm transition hover:shadow-md',
         featured
           ? 'bg-primary text-primary-foreground border-l-0'
-          : 'bg-card text-card-foreground border-l-2 border-primary/70',
+          : 'bg-card text-card-foreground border-primary/70 border-l-2',
       )}
     >
       {label && (
@@ -1212,12 +1234,7 @@ export function PortalCard({ href, label, title, description, featured }: Props)
         <ArrowRight className="size-4 shrink-0 transition group-hover:translate-x-0.5" />
       </div>
       {description && (
-        <div
-          className={cn(
-            'mt-0.5 text-xs',
-            featured ? 'opacity-90' : 'text-muted-foreground',
-          )}
-        >
+        <div className={cn('mt-0.5 text-xs', featured ? 'opacity-90' : 'text-muted-foreground')}>
           {description}
         </div>
       )}
@@ -1246,6 +1263,7 @@ git commit -m "feat(home): PortalCard component with tests"
 ### Task 16: SocialButton 元件
 
 **Files:**
+
 - Create: `components/social-button.tsx`
 
 - [ ] **Step 1: 實作（無邏輯只是樣式包裝，跳過 TDD）**
@@ -1269,7 +1287,7 @@ export function SocialButton({
       target="_blank"
       rel="noreferrer noopener"
       aria-label={label}
-      className="inline-flex size-9 items-center justify-center rounded-full bg-card text-foreground shadow-sm hover:shadow transition"
+      className="bg-card text-foreground inline-flex size-9 items-center justify-center rounded-full shadow-sm transition hover:shadow"
     >
       {children}
     </Link>
@@ -1289,6 +1307,7 @@ git commit -m "feat(home): SocialButton component"
 ### Task 17: 首頁組合
 
 **Files:**
+
 - Modify: `app/page.tsx`
 
 - [ ] **Step 1: 改寫 `app/page.tsx`**
@@ -1307,18 +1326,18 @@ export default function Home() {
           <ThemeToggle />
         </div>
 
-        <section className="text-center mt-2">
+        <section className="mt-2 text-center">
           <div
             aria-hidden
-            className="mx-auto flex size-20 items-center justify-center rounded-full bg-primary text-3xl font-bold text-primary-foreground shadow-md"
+            className="bg-primary text-primary-foreground mx-auto flex size-20 items-center justify-center rounded-full text-3xl font-bold shadow-md"
           >
             駿
           </div>
           <h1 className="mt-3 text-xl font-bold">
             王嘉駿 <span className="text-primary">·</span> 小駿
           </h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">前端工程師 ／ 音樂人</p>
-          <p className="mt-2 text-sm text-muted-foreground/80">玩程式，也玩聲音。</p>
+          <p className="text-muted-foreground mt-0.5 text-sm">前端工程師 ／ 音樂人</p>
+          <p className="text-muted-foreground/80 mt-2 text-sm">玩程式，也玩聲音。</p>
 
           <div className="mt-4 flex justify-center gap-2.5">
             <SocialButton href="https://instagram.com/juniswang" label="Instagram">
@@ -1347,16 +1366,11 @@ export default function Home() {
             title="文章 ／ 隨筆"
             description="技術筆記與生活雜記"
           />
-          <PortalCard
-            href="/work"
-            label="WORK"
-            title="作品集"
-            description="音樂與網頁專案"
-          />
+          <PortalCard href="/work" label="WORK" title="作品集" description="音樂與網頁專案" />
           <PortalCard href="/about" label="ABOUT" title="關於我" description="我是誰、在做什麼" />
         </section>
 
-        <footer className="mt-8 text-center text-xs text-muted-foreground/70">© 2026 王嘉駿</footer>
+        <footer className="text-muted-foreground/70 mt-8 text-center text-xs">© 2026 王嘉駿</footer>
       </div>
     </main>
   )
@@ -1393,6 +1407,7 @@ pnpm test && pnpm test:e2e && pnpm lint && pnpm format:check
 - [ ] **Step 2: 手動體驗清單**
 
 打開 http://localhost:3000，依序確認：
+
 - 首頁顯示傳送門版型，莫蘭迪色，字體正確
 - 亮／暗切換鈕正常
 - 連到 `/login` 能載入並登入
@@ -1416,6 +1431,7 @@ git tag phase-0-foundation
 ### Task 19: Cover 型別
 
 **Files:**
+
 - Create: `lib/covers/types.ts`
 
 - [ ] **Step 1: 實作**
@@ -1477,6 +1493,7 @@ git commit -m "feat(covers): cover types and platform constants"
 ### Task 20: URL 查詢參數解析（TDD）
 
 **Files:**
+
 - Create: `tests/lib/search-params.test.ts`
 - Create: `lib/covers/search-params.ts`
 
@@ -1601,6 +1618,7 @@ git commit -m "feat(covers): URL search params parser + builder (with tests)"
 ### Task 21: 伺服器端查詢函式
 
 **Files:**
+
 - Create: `lib/covers/queries.ts`
 
 注意：這個函式直接打 Supabase，單元測試會需要 mock client。為了不過度工程，這裡先用「實際打本機 Supabase」的整合測試在 E2E 時驗證；現在只寫實作，並在 E2E 涵蓋其行為。
@@ -1682,6 +1700,7 @@ git commit -m "feat(covers): server-side list + getById queries"
 ### Task 22: YouTube 工具（TDD）
 
 **Files:**
+
 - Create: `tests/lib/youtube.test.ts`
 - Create: `lib/youtube.ts`
 
@@ -1697,10 +1716,7 @@ describe('extractYouTubeId', () => {
     ['https://youtu.be/dQw4w9WgXcQ', 'dQw4w9WgXcQ'],
     ['https://www.youtube.com/embed/dQw4w9WgXcQ', 'dQw4w9WgXcQ'],
     ['https://www.youtube.com/shorts/dQw4w9WgXcQ', 'dQw4w9WgXcQ'],
-    [
-      'https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s&list=PLxxx',
-      'dQw4w9WgXcQ',
-    ],
+    ['https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s&list=PLxxx', 'dQw4w9WgXcQ'],
   ])('解析 %s -> %s', (url, expected) => {
     expect(extractYouTubeId(url)).toBe(expected)
   })
@@ -1779,6 +1795,7 @@ git commit -m "feat(youtube): extract video id + derive thumbnail (with tests)"
 ### Task 23: Zod 表單 schema（TDD）
 
 **Files:**
+
 - Create: `tests/lib/cover-schema.test.ts`
 - Create: `lib/covers/schema.ts`
 
@@ -1911,6 +1928,7 @@ git commit -m "feat(covers): Zod form schema (with tests)"
 ### Task 24: CoverCard 元件
 
 **Files:**
+
 - Create: `components/cover-card.tsx`
 
 - [ ] **Step 1: 實作**
@@ -1930,9 +1948,7 @@ const PLATFORM_SHORT: Record<Platform, string> = {
 function platformPillClass(platform: Platform) {
   return cn(
     'rounded-full px-2 py-[2px] text-[10px] font-bold',
-    platform === 'youtube'
-      ? 'bg-primary/10 text-primary'
-      : 'bg-muted text-muted-foreground',
+    platform === 'youtube' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground',
   )
 }
 
@@ -1940,23 +1956,29 @@ export function CoverCard({ cover }: { cover: CoverWithLinks }) {
   return (
     <Link
       href={`/covers/${cover.id}`}
-      className="flex gap-3 rounded-2xl bg-card p-3 shadow-sm transition hover:shadow-md"
+      className="bg-card flex gap-3 rounded-2xl p-3 shadow-sm transition hover:shadow-md"
     >
       <div
-        className="size-[60px] shrink-0 rounded-xl bg-muted"
+        className="bg-muted size-[60px] shrink-0 rounded-xl"
         style={
-          cover.thumbnail_url ? { background: `center/cover no-repeat url('${cover.thumbnail_url}')` } : undefined
+          cover.thumbnail_url
+            ? { background: `center/cover no-repeat url('${cover.thumbnail_url}')` }
+            : undefined
         }
         aria-hidden
       />
       <div className="min-w-0 flex-1">
-        <div className="truncate font-bold text-card-foreground">{cover.title}</div>
-        <div className="truncate text-xs text-muted-foreground">
+        <div className="text-card-foreground truncate font-bold">{cover.title}</div>
+        <div className="text-muted-foreground truncate text-xs">
           原唱 {cover.original_artist} · {cover.cover_date}
         </div>
         <div className="mt-1.5 flex flex-wrap gap-1.5">
           {cover.cover_links.map((l) => (
-            <span key={l.id} className={platformPillClass(l.platform)} title={PLATFORM_LABEL[l.platform]}>
+            <span
+              key={l.id}
+              className={platformPillClass(l.platform)}
+              title={PLATFORM_LABEL[l.platform]}
+            >
               {PLATFORM_SHORT[l.platform]}
             </span>
           ))}
@@ -1979,6 +2001,7 @@ git commit -m "feat(covers): CoverCard component"
 ### Task 25: SearchInput ＋ FilterPills 元件
 
 **Files:**
+
 - Create: `components/search-input.tsx`
 - Create: `components/filter-pills.tsx`
 
@@ -2008,12 +2031,12 @@ export function SearchInput({ defaultValue }: { defaultValue?: string }) {
 
   return (
     <form onSubmit={onSubmit} className="relative">
-      <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <Search className="text-muted-foreground absolute top-1/2 left-4 size-4 -translate-y-1/2" />
       <input
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="搜尋歌名或原唱⋯"
-        className="w-full rounded-full bg-card pl-10 pr-4 py-2.5 text-sm shadow-sm outline-none ring-0 placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-ring"
+        className="bg-card placeholder:text-muted-foreground/70 focus:ring-ring w-full rounded-full py-2.5 pr-4 pl-10 text-sm shadow-sm ring-0 outline-none focus:ring-2"
         aria-label="搜尋"
       />
     </form>
@@ -2042,7 +2065,15 @@ export function FilterPills({ active }: { active?: Platform }) {
     router.push(`/covers?${sp.toString()}`)
   }
 
-  const Pill = ({ label, value, current }: { label: string; value?: Platform; current: boolean }) => (
+  const Pill = ({
+    label,
+    value,
+    current,
+  }: {
+    label: string
+    value?: Platform
+    current: boolean
+  }) => (
     <button
       type="button"
       onClick={() => set(value)}
@@ -2081,6 +2112,7 @@ git commit -m "feat(covers): SearchInput + FilterPills"
 ### Task 26: 公開翻唱列表頁
 
 **Files:**
+
 - Create: `app/covers/page.tsx`
 - Create: `components/load-more-button.tsx`
 
@@ -2112,13 +2144,16 @@ export default async function CoversPage({
   return (
     <main className="min-h-dvh px-4 py-6">
       <div className="mx-auto w-full max-w-[480px]">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+        <Link
+          href="/"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm"
+        >
           <ArrowLeft className="size-4" /> 回首頁
         </Link>
 
         <div className="mt-4 flex items-baseline justify-between">
           <h1 className="text-2xl font-bold">翻唱</h1>
-          <span className="text-sm font-bold text-primary">{total} 首</span>
+          <span className="text-primary text-sm font-bold">{total} 首</span>
         </div>
 
         <div className="mt-3">
@@ -2130,7 +2165,7 @@ export default async function CoversPage({
 
         <ul className="mt-4 flex flex-col gap-3">
           {items.length === 0 ? (
-            <li className="rounded-2xl bg-card p-6 text-center text-sm text-muted-foreground">
+            <li className="bg-card text-muted-foreground rounded-2xl p-6 text-center text-sm">
               還沒有符合條件的翻唱
             </li>
           ) : (
@@ -2177,7 +2212,7 @@ export function LoadMoreButton({ currentOffset, limit }: { currentOffset: number
       type="button"
       onClick={onClick}
       disabled={pending}
-      className="rounded-full bg-card px-6 py-2.5 text-sm font-bold text-primary shadow-sm transition hover:shadow disabled:opacity-60"
+      className="bg-card text-primary rounded-full px-6 py-2.5 text-sm font-bold shadow-sm transition hover:shadow disabled:opacity-60"
     >
       {pending ? '載入中⋯' : '載入更多'}
     </button>
@@ -2190,6 +2225,7 @@ export function LoadMoreButton({ currentOffset, limit }: { currentOffset: number
 - [ ] **Step 3: 在 Studio 手動塞 3 筆假資料測試**
 
 打開 http://127.0.0.1:54323 → Table editor → covers → Insert row：
+
 - Row 1: title=交換餘生, original_artist=林宥嘉, cover_date=2026-05-01
 - Row 2: title=小酒窩, original_artist=林俊傑, cover_date=2026-04-15
 - Row 3: title=說好的幸福呢, original_artist=周杰倫, cover_date=2026-03-20
@@ -2214,6 +2250,7 @@ git commit -m "feat(covers): public list page with search, filter, load-more"
 ### Task 27: 詳情頁 ＋ YouTube 內嵌
 
 **Files:**
+
 - Create: `app/covers/[id]/page.tsx`
 
 - [ ] **Step 1: 實作**
@@ -2228,11 +2265,7 @@ import { extractYouTubeId } from '@/lib/youtube'
 
 export const dynamic = 'force-dynamic'
 
-export default async function CoverDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default async function CoverDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const cover = await getCoverById(id)
   if (!cover) notFound()
@@ -2243,18 +2276,21 @@ export default async function CoverDetailPage({
   return (
     <main className="min-h-dvh px-4 py-6">
       <div className="mx-auto w-full max-w-[560px]">
-        <Link href="/covers" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+        <Link
+          href="/covers"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm"
+        >
           <ArrowLeft className="size-4" /> 回翻唱列表
         </Link>
 
         <article className="mt-4">
           <h1 className="text-2xl font-bold">{cover.title}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="text-muted-foreground mt-1 text-sm">
             原唱 {cover.original_artist} · {cover.cover_date}
           </p>
 
           {youtubeId && (
-            <div className="mt-4 aspect-video overflow-hidden rounded-2xl bg-muted">
+            <div className="bg-muted mt-4 aspect-video overflow-hidden rounded-2xl">
               <iframe
                 className="size-full"
                 src={`https://www.youtube.com/embed/${youtubeId}`}
@@ -2266,13 +2302,13 @@ export default async function CoverDetailPage({
           )}
 
           {cover.description && (
-            <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-card-foreground">
+            <p className="text-card-foreground mt-4 text-sm leading-relaxed whitespace-pre-line">
               {cover.description}
             </p>
           )}
 
           <div className="mt-6 space-y-2">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-primary">前往平台</h2>
+            <h2 className="text-primary text-xs font-bold tracking-widest uppercase">前往平台</h2>
             <ul className="flex flex-col gap-2">
               {cover.cover_links.map((l) => {
                 const label =
@@ -2285,10 +2321,10 @@ export default async function CoverDetailPage({
                       href={l.url}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="flex items-center justify-between rounded-xl bg-card px-4 py-3 shadow-sm hover:shadow"
+                      className="bg-card flex items-center justify-between rounded-xl px-4 py-3 shadow-sm hover:shadow"
                     >
                       <span className="text-sm font-semibold">{label}</span>
-                      <ExternalLink className="size-4 text-muted-foreground" />
+                      <ExternalLink className="text-muted-foreground size-4" />
                     </Link>
                   </li>
                 )
@@ -2320,6 +2356,7 @@ git commit -m "feat(covers): detail page with YouTube embed and platform links"
 ### Task 28: 後台 layout ＋ dashboard
 
 **Files:**
+
 - Modify: `app/admin/page.tsx`
 - Create: `app/admin/layout.tsx`
 - Create: `app/admin/logout-button.tsx`
@@ -2359,7 +2396,7 @@ import { LogoutButton } from './logout-button'
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-dvh">
-      <header className="border-b border-border bg-card">
+      <header className="border-border bg-card border-b">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/admin" className="font-bold">
@@ -2391,9 +2428,15 @@ export default function AdminHome() {
   return (
     <div className="space-y-3">
       <h1 className="text-xl font-bold">後台首頁</h1>
-      <p className="text-sm text-muted-foreground">管理你的內容</p>
+      <p className="text-muted-foreground text-sm">管理你的內容</p>
       <div className="mt-3 flex flex-col gap-3">
-        <PortalCard href="/admin/covers" label="COVERS" title="翻唱管理" description="新增 ／ 編輯 ／ 刪除" featured />
+        <PortalCard
+          href="/admin/covers"
+          label="COVERS"
+          title="翻唱管理"
+          description="新增 ／ 編輯 ／ 刪除"
+          featured
+        />
       </div>
     </div>
   )
@@ -2416,6 +2459,7 @@ git commit -m "feat(admin): layout + dashboard + logout"
 ### Task 29: 後台翻唱列表 ＋ 刪除
 
 **Files:**
+
 - Create: `app/admin/covers/page.tsx`
 - Create: `app/admin/covers/delete-button.tsx`
 - Create: `app/admin/covers/actions.ts`
@@ -2462,7 +2506,9 @@ export function DeleteButton({ id, title }: { id: string; title: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-destructive">刪除</Button>
+        <Button variant="ghost" size="sm" className="text-destructive">
+          刪除
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -2503,32 +2549,36 @@ export default async function AdminCoversPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">翻唱管理</h1>
-          <p className="text-sm text-muted-foreground">共 {total} 首</p>
+          <p className="text-muted-foreground text-sm">共 {total} 首</p>
         </div>
         <Link href="/admin/covers/new">
           <Button>＋ 新增翻唱</Button>
         </Link>
       </div>
 
-      <ul className="mt-4 divide-y divide-border rounded-2xl border border-border bg-card">
+      <ul className="divide-border border-border bg-card mt-4 divide-y rounded-2xl border">
         {items.map((c) => (
           <li key={c.id} className="flex items-center justify-between px-4 py-3">
             <div className="min-w-0">
               <div className="truncate font-semibold">{c.title}</div>
-              <div className="truncate text-xs text-muted-foreground">
+              <div className="text-muted-foreground truncate text-xs">
                 {c.original_artist} · {c.cover_date} · {c.cover_links.length} 個連結
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-1">
               <Link href={`/admin/covers/${c.id}/edit`}>
-                <Button variant="ghost" size="sm">編輯</Button>
+                <Button variant="ghost" size="sm">
+                  編輯
+                </Button>
               </Link>
               <DeleteButton id={c.id} title={c.title} />
             </div>
           </li>
         ))}
         {items.length === 0 && (
-          <li className="px-4 py-6 text-center text-sm text-muted-foreground">還沒有翻唱，點右上新增</li>
+          <li className="text-muted-foreground px-4 py-6 text-center text-sm">
+            還沒有翻唱，點右上新增
+          </li>
         )}
       </ul>
     </div>
@@ -2552,6 +2602,7 @@ git commit -m "feat(admin/covers): list + delete with confirmation"
 ### Task 30: PlatformLinkFields 元件
 
 **Files:**
+
 - Create: `components/admin/platform-link-fields.tsx`
 
 - [ ] **Step 1: 安裝 react-hook-form**
@@ -2591,18 +2642,20 @@ export function PlatformLinkFields({ control }: { control: Control<CoverFormValu
 
       <ul className="space-y-2">
         {fields.map((f, idx) => (
-          <li key={f.id} className="rounded-xl border border-border bg-card p-3">
-            <div className="grid grid-cols-[120px_1fr_auto] gap-2 items-center">
+          <li key={f.id} className="border-border bg-card rounded-xl border p-3">
+            <div className="grid grid-cols-[120px_1fr_auto] items-center gap-2">
               <Controller
                 control={control}
                 name={`links.${idx}.platform` as const}
                 render={({ field }) => (
                   <select
                     {...field}
-                    className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+                    className="border-input bg-background h-9 rounded-md border px-2 text-sm"
                   >
                     {PLATFORMS.map((p) => (
-                      <option key={p} value={p}>{PLATFORM_LABEL[p]}</option>
+                      <option key={p} value={p}>
+                        {PLATFORM_LABEL[p]}
+                      </option>
                     ))}
                   </select>
                 )}
@@ -2659,6 +2712,7 @@ git commit -m "feat(admin/covers): PlatformLinkFields (dynamic add/remove)"
 ### Task 31: ThumbnailUpload 元件
 
 **Files:**
+
 - Create: `components/admin/thumbnail-upload.tsx`
 
 - [ ] **Step 1: 實作**
@@ -2701,7 +2755,10 @@ export function ThumbnailUpload({ value, onChange }: Props) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-3">
-        <div className="size-20 shrink-0 rounded-xl bg-muted" style={value ? { background: `center/cover no-repeat url('${value}')` } : undefined} />
+        <div
+          className="bg-muted size-20 shrink-0 rounded-xl"
+          style={value ? { background: `center/cover no-repeat url('${value}')` } : undefined}
+        />
         <div className="space-y-1">
           <label className="inline-block">
             <input
@@ -2724,7 +2781,7 @@ export function ThumbnailUpload({ value, onChange }: Props) {
           )}
         </div>
       </div>
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p className="text-destructive text-xs">{error}</p>}
     </div>
   )
 }
@@ -2742,6 +2799,7 @@ git commit -m "feat(admin/covers): ThumbnailUpload to Supabase Storage"
 ### Task 32: CoverForm 組合（含 YouTube 自動帶縮圖）
 
 **Files:**
+
 - Create: `components/admin/cover-form.tsx`
 
 - [ ] **Step 1: 實作**
@@ -2817,19 +2875,23 @@ export function CoverForm({ initialValues }: Props) {
       <div className="space-y-1.5">
         <Label htmlFor="title">歌名</Label>
         <Input id="title" {...register('title')} />
-        {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
+        {errors.title && <p className="text-destructive text-xs">{errors.title.message}</p>}
       </div>
 
       <div className="space-y-1.5">
         <Label htmlFor="original_artist">原唱</Label>
         <Input id="original_artist" {...register('original_artist')} />
-        {errors.original_artist && <p className="text-xs text-destructive">{errors.original_artist.message}</p>}
+        {errors.original_artist && (
+          <p className="text-destructive text-xs">{errors.original_artist.message}</p>
+        )}
       </div>
 
       <div className="space-y-1.5">
         <Label htmlFor="cover_date">發布日</Label>
         <Input id="cover_date" type="date" {...register('cover_date')} />
-        {errors.cover_date && <p className="text-xs text-destructive">{errors.cover_date.message}</p>}
+        {errors.cover_date && (
+          <p className="text-destructive text-xs">{errors.cover_date.message}</p>
+        )}
       </div>
 
       <div className="space-y-1.5">
@@ -2837,7 +2899,7 @@ export function CoverForm({ initialValues }: Props) {
         <textarea
           id="description"
           rows={4}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm"
           {...register('description', { setValueAs: (v: string) => (v?.trim() ? v : null) })}
         />
       </div>
@@ -2850,7 +2912,10 @@ export function CoverForm({ initialValues }: Props) {
           onChange={(e) =>
             setValue(
               'tags',
-              e.target.value.split(',').map((t) => t.trim()).filter(Boolean),
+              e.target.value
+                .split(',')
+                .map((t) => t.trim())
+                .filter(Boolean),
               { shouldValidate: true },
             )
           }
@@ -2859,17 +2924,24 @@ export function CoverForm({ initialValues }: Props) {
 
       <div className="space-y-1.5">
         <Label>縮圖</Label>
-        <p className="text-xs text-muted-foreground">填了 YouTube 連結會自動帶縮圖，也可手動上傳覆蓋。</p>
-        <ThumbnailUpload value={watch('thumbnail_url')} onChange={(v) => setValue('thumbnail_url', v)} />
+        <p className="text-muted-foreground text-xs">
+          填了 YouTube 連結會自動帶縮圖，也可手動上傳覆蓋。
+        </p>
+        <ThumbnailUpload
+          value={watch('thumbnail_url')}
+          onChange={(v) => setValue('thumbnail_url', v)}
+        />
       </div>
 
       <PlatformLinkFields control={control} />
       {errors.links && typeof errors.links.message === 'string' && (
-        <p className="text-xs text-destructive">{errors.links.message}</p>
+        <p className="text-destructive text-xs">{errors.links.message}</p>
       )}
 
       <div className="flex justify-end gap-2 pt-2">
-        <Button type="button" variant="ghost" onClick={() => router.back()}>取消</Button>
+        <Button type="button" variant="ghost" onClick={() => router.back()}>
+          取消
+        </Button>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? '儲存中⋯' : '儲存'}
         </Button>
@@ -2965,6 +3037,7 @@ git commit -m "feat(admin/covers): CoverForm (RHF + Zod) + saveCover action"
 ### Task 33: 新增頁面
 
 **Files:**
+
 - Create: `app/admin/covers/new/page.tsx`
 
 - [ ] **Step 1: 實作**
@@ -2976,7 +3049,7 @@ export default function NewCoverPage() {
   return (
     <div>
       <h1 className="text-xl font-bold">新增翻唱</h1>
-      <p className="mb-4 text-sm text-muted-foreground">填寫資訊，至少要有一個平台連結。</p>
+      <p className="text-muted-foreground mb-4 text-sm">填寫資訊，至少要有一個平台連結。</p>
       <CoverForm />
     </div>
   )
@@ -2999,6 +3072,7 @@ git commit -m "feat(admin/covers): new cover page"
 ### Task 34: 編輯頁面
 
 **Files:**
+
 - Create: `app/admin/covers/[id]/edit/page.tsx`
 
 - [ ] **Step 1: 實作**
@@ -3008,11 +3082,7 @@ import { notFound } from 'next/navigation'
 import { CoverForm } from '@/components/admin/cover-form'
 import { getCoverById } from '@/lib/covers/queries'
 
-export default async function EditCoverPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default async function EditCoverPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const cover = await getCoverById(id)
   if (!cover) notFound()
@@ -3020,7 +3090,7 @@ export default async function EditCoverPage({
   return (
     <div>
       <h1 className="text-xl font-bold">編輯翻唱</h1>
-      <p className="mb-4 text-sm text-muted-foreground">{cover.title}</p>
+      <p className="text-muted-foreground mb-4 text-sm">{cover.title}</p>
       <CoverForm
         initialValues={{
           id: cover.id,
@@ -3060,6 +3130,7 @@ git commit -m "feat(admin/covers): edit cover page"
 ### Task 35: E2E：公開列表搜尋／篩選
 
 **Files:**
+
 - Create: `e2e/covers.spec.ts`
 - Create: `e2e/fixtures/seed.ts`
 
@@ -3097,26 +3168,48 @@ export async function resetCovers() {
 export async function seedCovers() {
   const sb = adminClient()
   const fixtures = [
-    { title: '交換餘生', original_artist: '林宥嘉', cover_date: '2026-05-01', links: [
-      { platform: 'youtube', url: 'https://youtu.be/dQw4w9WgXcQ' },
-      { platform: 'instagram', url: 'https://instagram.com/p/abc' },
-    ]},
-    { title: '小酒窩', original_artist: '林俊傑', cover_date: '2026-04-15', links: [
-      { platform: 'youtube', url: 'https://youtu.be/dQw4w9WgXcQ' },
-    ]},
-    { title: '說好的幸福呢', original_artist: '周杰倫', cover_date: '2026-03-20', links: [
-      { platform: 'threads', url: 'https://www.threads.net/@juniswang/post/abc' },
-    ]},
+    {
+      title: '交換餘生',
+      original_artist: '林宥嘉',
+      cover_date: '2026-05-01',
+      links: [
+        { platform: 'youtube', url: 'https://youtu.be/dQw4w9WgXcQ' },
+        { platform: 'instagram', url: 'https://instagram.com/p/abc' },
+      ],
+    },
+    {
+      title: '小酒窩',
+      original_artist: '林俊傑',
+      cover_date: '2026-04-15',
+      links: [{ platform: 'youtube', url: 'https://youtu.be/dQw4w9WgXcQ' }],
+    },
+    {
+      title: '說好的幸福呢',
+      original_artist: '周杰倫',
+      cover_date: '2026-03-20',
+      links: [{ platform: 'threads', url: 'https://www.threads.net/@juniswang/post/abc' }],
+    },
   ]
   for (const f of fixtures) {
-    const { data } = await sb.from('covers').insert({
-      title: f.title,
-      original_artist: f.original_artist,
-      cover_date: f.cover_date,
-    }).select('id').single()
-    await sb.from('cover_links').insert(
-      f.links.map((l) => ({ cover_id: data!.id, platform: l.platform, url: l.url, platform_label: null })),
-    )
+    const { data } = await sb
+      .from('covers')
+      .insert({
+        title: f.title,
+        original_artist: f.original_artist,
+        cover_date: f.cover_date,
+      })
+      .select('id')
+      .single()
+    await sb
+      .from('cover_links')
+      .insert(
+        f.links.map((l) => ({
+          cover_id: data!.id,
+          platform: l.platform,
+          url: l.url,
+          platform_label: null,
+        })),
+      )
   }
 }
 ```
@@ -3184,6 +3277,7 @@ git commit -m "test(e2e): covers list search/filter/detail flows"
 ### Task 36: E2E：admin 登入 ＋ 新增
 
 **Files:**
+
 - Create: `e2e/admin.spec.ts`
 
 - [ ] **Step 1: 確認 admin 測試帳號**
@@ -3253,11 +3347,12 @@ git commit -m "test(e2e): admin login + create flow"
 ### Task 37: README quickstart
 
 **Files:**
+
 - Create: `README.md`
 
 - [ ] **Step 1: 撰寫**
 
-```markdown
+````markdown
 # Jun Website
 
 王嘉駿（Jun Wang）個人網站。前端工程師 ／ 音樂人。
@@ -3281,6 +3376,7 @@ supabase start                  # 啟動本機 Supabase（OrbStack 需在執行�
 cp .env.local.example .env.local
 # 把 supabase status 印出的 anon key、service role key 填入 .env.local
 ```
+````
 
 到 http://127.0.0.1:54323（Supabase Studio）→ Authentication → Add user，建立 admin 帳號，email 要對應 `.env.local` 的 `ADMIN_EMAIL_ALLOWLIST`。
 
@@ -3318,14 +3414,15 @@ pnpm format:check
 
 - 設計：`docs/superpowers/specs/2026-05-26-jun-website-design.md`
 - 實作計畫：`docs/superpowers/plans/2026-05-26-jun-website.md`
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add -A
 git commit -m "docs: README quickstart"
-```
+````
 
 ---
 
