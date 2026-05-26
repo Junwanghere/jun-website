@@ -1,4 +1,4 @@
-import { Camera, AtSign, Music } from 'lucide-react'
+import { SiInstagram, SiThreads, SiYoutube } from 'react-icons/si'
 import { PortalCard } from '@/components/portal-card'
 import { SocialButton } from '@/components/social-button'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -26,13 +26,13 @@ export default function Home() {
 
           <div className="mt-4 flex justify-center gap-2.5">
             <SocialButton href="https://instagram.com/juniswang" label="Instagram">
-              <Camera className="size-4" />
+              <SiInstagram className="size-4" />
             </SocialButton>
             <SocialButton href="https://www.threads.net/@juniswang" label="Threads">
-              <AtSign className="size-4" />
+              <SiThreads className="size-4" />
             </SocialButton>
             <SocialButton href="https://youtube.com" label="YouTube">
-              <Music className="size-4" />
+              <SiYoutube className="size-4" />
             </SocialButton>
           </div>
         </section>
