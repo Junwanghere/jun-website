@@ -28,7 +28,8 @@ export function CoverForm({ initialValues }: Props) {
     getValues,
     formState: { errors, isSubmitting },
   } = useForm<CoverFormValues>({
-    resolver: zodResolver(coverFormSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(coverFormSchema as any),
     defaultValues: {
       title: initialValues?.title ?? '',
       original_artist: initialValues?.original_artist ?? '',
@@ -67,14 +68,14 @@ export function CoverForm({ initialValues }: Props) {
       <div className="space-y-1.5">
         <Label htmlFor="title">歌名</Label>
         <Input id="title" {...register('title')} />
-        {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
+        {errors.title && <p className="text-destructive text-xs">{errors.title.message}</p>}
       </div>
 
       <div className="space-y-1.5">
         <Label htmlFor="original_artist">原唱</Label>
         <Input id="original_artist" {...register('original_artist')} />
         {errors.original_artist && (
-          <p className="text-xs text-destructive">{errors.original_artist.message}</p>
+          <p className="text-destructive text-xs">{errors.original_artist.message}</p>
         )}
       </div>
 
@@ -82,7 +83,7 @@ export function CoverForm({ initialValues }: Props) {
         <Label htmlFor="cover_date">發布日</Label>
         <Input id="cover_date" type="date" {...register('cover_date')} />
         {errors.cover_date && (
-          <p className="text-xs text-destructive">{errors.cover_date.message}</p>
+          <p className="text-destructive text-xs">{errors.cover_date.message}</p>
         )}
       </div>
 
@@ -91,7 +92,7 @@ export function CoverForm({ initialValues }: Props) {
         <textarea
           id="description"
           rows={4}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm"
           {...register('description', {
             setValueAs: (v: string) => (v?.trim() ? v : null),
           })}
@@ -106,7 +107,10 @@ export function CoverForm({ initialValues }: Props) {
           onChange={(e) =>
             setValue(
               'tags',
-              e.target.value.split(',').map((t) => t.trim()).filter(Boolean),
+              e.target.value
+                .split(',')
+                .map((t) => t.trim())
+                .filter(Boolean),
               { shouldValidate: true },
             )
           }
@@ -115,15 +119,18 @@ export function CoverForm({ initialValues }: Props) {
 
       <div className="space-y-1.5">
         <Label>縮圖</Label>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-muted-foreground text-xs">
           填了 YouTube 連結會自動帶縮圖，也可手動上傳覆蓋。
         </p>
-        <ThumbnailUpload value={watch('thumbnail_url')} onChange={(v) => setValue('thumbnail_url', v)} />
+        <ThumbnailUpload
+          value={watch('thumbnail_url')}
+          onChange={(v) => setValue('thumbnail_url', v)}
+        />
       </div>
 
       <PlatformLinkFields control={control} />
       {errors.links && typeof errors.links.message === 'string' && (
-        <p className="text-xs text-destructive">{errors.links.message}</p>
+        <p className="text-destructive text-xs">{errors.links.message}</p>
       )}
 
       <div className="flex justify-end gap-2 pt-2">
