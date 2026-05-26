@@ -63,7 +63,7 @@
 ```
 /                         首頁
 /covers                   翻唱列表（搜尋／篩選／排序／載入更多）
-/covers/[slug]            翻唱詳情
+/covers/[id]              翻唱詳情
 /login                    後台登入
 /admin                    後台首頁
 /admin/covers             翻唱管理列表
@@ -86,7 +86,6 @@
 | thumbnail_url | text, null | 縮圖（Supabase Storage） |
 | description | text, null | 心得／簡介 |
 | tags | text[], null | 類型標籤，供篩選 |
-| slug | text, unique | 詳情頁網址用 |
 | created_at | timestamptz | 建立時間 |
 | updated_at | timestamptz | 更新時間 |
 
@@ -117,7 +116,7 @@
 - 分頁：「載入更多」按鈕，採 range／keyset 分頁；初始為伺服器端渲染，載入更多由 client 元件呼叫 route handler 或 server action
 - 每筆顯示：縮圖、歌名、原唱、日期、平台連結標記（YT／IG／TH／其他）
 
-### 詳情頁 `/covers/[slug]`
+### 詳情頁 `/covers/[id]`
 
 - 顯示縮圖、歌名、原唱、日期、心得
 - 若有 YouTube 連結，內嵌播放器
@@ -128,10 +127,10 @@
 
 - 列表：顯示所有翻唱，可進入編輯或刪除
 - 新增／編輯表單：
-  - 基本欄位：歌名、原唱、發布日、心得、類型標籤、slug（可由歌名自動產生）
+  - 基本欄位：歌名、原唱、發布日、心得、類型標籤
   - 縮圖：上傳圖片到 Storage；或貼 YouTube 連結時自動帶入 YouTube 縮圖
   - 平台連結：可動態新增／移除多列（平台、連結、必要時的自訂平台名稱）
-  - 表單驗證：必填、網址格式、slug 唯一
+  - 表單驗證：必填、網址格式
 - 刪除：需二次確認；連帶刪除其 `cover_links`
 
 ## 6. 認證與權限
