@@ -42,6 +42,7 @@
 ### Task 1: 新增 migration 0003 — cover_artist_counts view
 
 **Files:**
+
 - Create: `supabase/migrations/0003_cover_artist_counts.sql`
 
 - [ ] **Step 1: 產生空 migration 檔並改名**
@@ -99,6 +100,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 2: 新增 migration 0004 — 擴充 platform enum
 
 **Files:**
+
 - Create: `supabase/migrations/0004_extend_platforms.sql`
 
 - [ ] **Step 1: 產生 migration**
@@ -179,6 +181,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 3: 更新 `lib/covers/types.ts`
 
 **Files:**
+
 - Modify: `lib/covers/types.ts`
 
 - [ ] **Step 1: 整支覆寫**
@@ -231,7 +234,7 @@ export type CoverSort = 'newest' | 'oldest'
 
 export type CoverQuery = {
   q?: string
-  artist?: string  // 取代 platform
+  artist?: string // 取代 platform
   tag?: string
   sort: CoverSort
   limit: number
@@ -269,6 +272,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 4: 更新 `search-params.ts`（TDD）
 
 **Files:**
+
 - Modify: `tests/lib/search-params.test.ts`
 - Modify: `lib/covers/search-params.ts`
 
@@ -401,6 +405,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 5: 更新 `lib/covers/queries.ts`
 
 **Files:**
+
 - Modify: `lib/covers/queries.ts`
 
 - [ ] **Step 1: 整支覆寫**
@@ -465,6 +470,7 @@ export async function getTopOriginalArtists(limit = 3): Promise<string[]> {
 ```
 
 差異：
+
 - 拿掉 `coverIdsFilter`（平台兩階段過濾）整段邏輯
 - `listCovers` 加 `if (query.artist) q = q.eq('original_artist', query.artist)`
 - 新增 `getTopOriginalArtists(limit)`
@@ -497,6 +503,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 6: 新增 PlatformIcon 元件（TDD）
 
 **Files:**
+
 - Create: `tests/components/platform-icon.test.tsx`
 - Create: `components/platform-icon.tsx`
 
@@ -532,7 +539,7 @@ describe('PlatformIcon', () => {
     const { container } = render(<PlatformIcon platform="instagram" />)
     const svg = container.querySelector('svg')
     expect(svg).toBeInTheDocument()
-    expect(svg?.innerHTML).toContain('url(#')  // linearGradient fill reference
+    expect(svg?.innerHTML).toContain('url(#') // linearGradient fill reference
   })
 
   it('TikTok 渲染三層 SVG 達成 chromatic aberration', () => {
@@ -716,6 +723,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 7: 新增 ArtistFilterPills 元件
 
 **Files:**
+
 - Create: `components/artist-filter-pills.tsx`
 
 - [ ] **Step 1: 實作**
@@ -803,6 +811,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 8: 改寫 CoverCard 元件
 
 **Files:**
+
 - Modify: `components/cover-card.tsx`
 
 - [ ] **Step 1: 整支覆寫**
@@ -816,9 +825,9 @@ import { PLATFORM_LABEL, type CoverWithLinks } from '@/lib/covers/types'
 
 export function CoverCard({ cover }: { cover: CoverWithLinks }) {
   return (
-    <article className="relative flex gap-3 rounded-2xl bg-card p-3 shadow-sm transition hover:shadow-md md:flex-col md:gap-2">
+    <article className="bg-card relative flex gap-3 rounded-2xl p-3 shadow-sm transition hover:shadow-md md:flex-col md:gap-2">
       <div
-        className="aspect-video w-32 shrink-0 rounded-xl bg-muted md:w-full"
+        className="bg-muted aspect-video w-32 shrink-0 rounded-xl md:w-full"
         style={
           cover.thumbnail_url
             ? { background: `center/cover no-repeat url('${cover.thumbnail_url}')` }
@@ -827,21 +836,23 @@ export function CoverCard({ cover }: { cover: CoverWithLinks }) {
         aria-hidden
       />
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-base font-bold text-card-foreground">
+        <h3 className="text-card-foreground truncate text-base font-bold">
           <Link
             href={`/covers/${cover.id}`}
-            className="rounded after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="focus-visible:ring-ring rounded after:absolute after:inset-0 after:content-[''] focus-visible:ring-2 focus-visible:outline-none"
           >
             {cover.title}
           </Link>
         </h3>
-        <div className="truncate text-xs text-muted-foreground">
+        <div className="text-muted-foreground truncate text-xs">
           原唱 {cover.original_artist} · {cover.cover_date}
         </div>
         <div className="relative z-10 mt-1.5 flex flex-wrap items-center gap-1.5">
           {cover.cover_links.map((l) => {
             const ariaName =
-              l.platform === 'other' && l.platform_label ? l.platform_label : PLATFORM_LABEL[l.platform]
+              l.platform === 'other' && l.platform_label
+                ? l.platform_label
+                : PLATFORM_LABEL[l.platform]
             return (
               <a
                 key={l.id}
@@ -849,7 +860,7 @@ export function CoverCard({ cover }: { cover: CoverWithLinks }) {
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={`在 ${ariaName} 觀看`}
-                className="inline-flex items-center rounded transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="focus-visible:ring-ring inline-flex items-center rounded transition hover:opacity-80 focus-visible:ring-2 focus-visible:outline-none"
               >
                 <PlatformIcon platform={l.platform} label={l.platform_label} />
               </a>
@@ -863,6 +874,7 @@ export function CoverCard({ cover }: { cover: CoverWithLinks }) {
 ```
 
 差異：
+
 - 容器從 `<Link>` 改為 `<article className="relative ...">`
 - 標題包成 `<h3><Link className="... after:absolute after:inset-0 ...">{title}</Link></h3>`，`::after` 偽元素把整張卡點擊區域覆蓋
 - icon 區塊 `relative z-10` 浮在 overlay 上方
@@ -906,6 +918,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 9: 刪除 `components/filter-pills.tsx`
 
 **Files:**
+
 - Delete: `components/filter-pills.tsx`
 
 - [ ] **Step 1: 確認沒有其他地方在用**
@@ -936,6 +949,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 10: 改寫 `app/covers/page.tsx`
 
 **Files:**
+
 - Modify: `app/covers/page.tsx`
 
 - [ ] **Step 1: 整支覆寫**
@@ -973,14 +987,14 @@ export default async function CoversPage({
       <div className="mx-auto w-full max-w-6xl">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm"
         >
           <ArrowLeft className="size-4" /> 回首頁
         </Link>
 
         <div className="mt-4 flex items-baseline justify-between">
           <h1 className="text-2xl font-bold">翻唱</h1>
-          <span className="text-sm font-bold text-primary">{total} 首</span>
+          <span className="text-primary text-sm font-bold">{total} 首</span>
         </div>
 
         <div className="mt-3 md:max-w-md">
@@ -992,7 +1006,7 @@ export default async function CoversPage({
 
         <ul className="mt-4 flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-3">
           {items.length === 0 ? (
-            <li className="rounded-2xl bg-card p-6 text-center text-sm text-muted-foreground md:col-span-2 lg:col-span-3">
+            <li className="bg-card text-muted-foreground rounded-2xl p-6 text-center text-sm md:col-span-2 lg:col-span-3">
               還沒有符合條件的翻唱
             </li>
           ) : (
@@ -1016,6 +1030,7 @@ export default async function CoversPage({
 ```
 
 差異：
+
 - 容器 `max-w-[480px]` → `max-w-6xl`
 - 搜尋框 wrapper 加 `md:max-w-md`
 - 拿掉 `<FilterPills>`，換 `<ArtistFilterPills topArtists={topArtists} active={query.artist} />`
@@ -1055,6 +1070,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ### Task 11: 更新 E2E 測試
 
 **Files:**
+
 - Modify: `e2e/covers.spec.ts`
 
 - [ ] **Step 1: 整支覆寫**
@@ -1103,7 +1119,7 @@ test('原唱 filter 點 top 1 過濾出該原唱的翻唱', async ({ page }) => 
 })
 
 test('DB 空時 filter row 隱藏，列表顯示 empty state', async ({ page }) => {
-  await resetCovers()  // 覆寫 beforeEach 的 seed
+  await resetCovers() // 覆寫 beforeEach 的 seed
   await page.goto('/covers')
   await expect(page.getByText('0 首')).toBeVisible()
   await expect(page.getByRole('button', { name: '全部' })).not.toBeAttached()
@@ -1129,6 +1145,7 @@ test('icon link 設定為新分頁開啟、href 指向平台 URL', async ({ page
 ```
 
 差異：
+
 - 拿掉「依平台篩選只顯示 Threads 的」
 - 新增「原唱 filter 點 top 1 過濾」
 - 新增「DB 空時 filter row 隱藏」
@@ -1144,6 +1161,7 @@ pnpm test:e2e
 預期：全綠（admin spec 不動、smoke spec 不動、covers spec 6 個 test 都 pass）。
 
 如果「DB 空時 filter row 隱藏」這個 test fail，檢查：
+
 - ArtistFilterPills 是否真的在 topArtists 為空時 return null
 - `getByRole('button', { name: '全部' })` 用 `not.toBeAttached()` 確認完全不在 DOM 裡
 

@@ -32,11 +32,11 @@
 
 ### 3.1 響應斷點與版型
 
-| 區間 | 版型 | 卡片內部 | 縮圖尺寸 |
-| --- | --- | --- | --- |
-| `<768px` | 單欄列表（`flex flex-col gap-3`） | 左圖右文（`flex gap-3`） | `w-32` ≈ 128×72px（16:9） |
-| `≥768px`（md） | 2 col grid（`md:grid md:grid-cols-2 md:gap-4`） | 上圖下文（`md:flex-col md:gap-2`） | `w-full`，`aspect-video` 自動 |
-| `≥1024px`（lg） | 3 col grid（`lg:grid-cols-3`） | 同 md | 同 md |
+| 區間            | 版型                                            | 卡片內部                           | 縮圖尺寸                      |
+| --------------- | ----------------------------------------------- | ---------------------------------- | ----------------------------- |
+| `<768px`        | 單欄列表（`flex flex-col gap-3`）               | 左圖右文（`flex gap-3`）           | `w-32` ≈ 128×72px（16:9）     |
+| `≥768px`（md）  | 2 col grid（`md:grid md:grid-cols-2 md:gap-4`） | 上圖下文（`md:flex-col md:gap-2`） | `w-full`，`aspect-video` 自動 |
+| `≥1024px`（lg） | 3 col grid（`lg:grid-cols-3`）                  | 同 md                              | 同 md                         |
 
 ### 3.2 容器
 
@@ -53,22 +53,26 @@ mx-auto w-full max-w-6xl px-4 py-6
 採「linked card with linked descendants」a11y 模式——卡片本身是 `<article>` 而非 link；標題包一個 `<Link>` 到詳情頁、用 `::after` 偽元素覆蓋整張卡片；icon 用 `<a>` 包並 `position:relative z-10` 浮在 overlay 上面。HTML 不能巢狀 `<a>`，這個模式是規避方式。
 
 ```tsx
-<article className="relative flex gap-3 rounded-2xl bg-card p-3 shadow-sm transition hover:shadow-md md:flex-col md:gap-2">
+<article className="bg-card relative flex gap-3 rounded-2xl p-3 shadow-sm transition hover:shadow-md md:flex-col md:gap-2">
   <div
-    className="aspect-video w-32 shrink-0 rounded-xl bg-muted md:w-full"
-    style={thumbnail_url ? { background: `center/cover no-repeat url('${thumbnail_url}')` } : undefined}
+    className="bg-muted aspect-video w-32 shrink-0 rounded-xl md:w-full"
+    style={
+      thumbnail_url ? { background: `center/cover no-repeat url('${thumbnail_url}')` } : undefined
+    }
     aria-hidden
   />
   <div className="min-w-0 flex-1">
-    <h3 className="truncate text-base font-bold text-card-foreground">
+    <h3 className="text-card-foreground truncate text-base font-bold">
       <Link
         href={`/covers/${cover.id}`}
-        className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+        className="focus-visible:ring-ring rounded after:absolute after:inset-0 after:content-[''] focus-visible:ring-2 focus-visible:outline-none"
       >
         {title}
       </Link>
     </h3>
-    <div className="truncate text-xs text-muted-foreground">原唱 {original_artist} · {cover_date}</div>
+    <div className="text-muted-foreground truncate text-xs">
+      原唱 {original_artist} · {cover_date}
+    </div>
     <div className="relative z-10 mt-1.5 flex flex-wrap gap-1.5">
       {cover.cover_links.map((l) => (
         <a
@@ -76,7 +80,7 @@ mx-auto w-full max-w-6xl px-4 py-6
           href={l.url}
           target="_blank"
           rel="noreferrer noopener"
-          className="inline-flex items-center hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+          className="focus-visible:ring-ring inline-flex items-center rounded hover:opacity-80 focus-visible:ring-2 focus-visible:outline-none"
         >
           <PlatformIcon platform={l.platform} label={l.platform_label} />
         </a>
@@ -87,6 +91,7 @@ mx-auto w-full max-w-6xl px-4 py-6
 ```
 
 重點：
+
 - `<Link>` 的 `after:absolute after:inset-0` 讓整張卡片可點，但只有「title 文字本身」是 link semantics，整個 article 不需要包 link
 - 平台 icon 容器 `relative z-10` 浮在 overlay 之上，icon click 不會觸發詳情頁
 - 兩條 link 都有獨立 focus ring
@@ -111,25 +116,25 @@ mx-auto w-full max-w-6xl px-4 py-6
 
 ### 4.3 邊界
 
-| 情況 | 行為 |
-| --- | --- |
-| DB 完全空（0 個 distinct artist） | 整條 filter row 隱藏 |
-| 只有 1 個 artist | 顯示「全部」+ 該 artist，共 2 個 pill |
-| 只有 2 個 artists | 顯示「全部」+ 2 個 artist pill |
+| 情況                                  | 行為                                                                                    |
+| ------------------------------------- | --------------------------------------------------------------------------------------- |
+| DB 完全空（0 個 distinct artist）     | 整條 filter row 隱藏                                                                    |
+| 只有 1 個 artist                      | 顯示「全部」+ 該 artist，共 2 個 pill                                                   |
+| 只有 2 個 artists                     | 顯示「全部」+ 2 個 artist pill                                                          |
 | `?artist=<name>` 的 name 不存在 DB 中 | 列表顯示既有 empty state「還沒有符合條件的翻唱」，filter row 上沒有對應 pill 被標為選中 |
 
 ## 5. 卡片平台 icon
 
 ### 5.1 對應表
 
-| platform | 圖示 | 來源 | 顯示文字（PLATFORM_LABEL） |
-| --- | --- | --- | --- |
-| `youtube` | `SiYoutube` | `react-icons/si` | YouTube |
-| `instagram` | `SiInstagram` | `react-icons/si` | Instagram |
-| `threads` | `SiThreads` | `react-icons/si` | Threads |
-| `tiktok` | `SiTiktok` | `react-icons/si` | TikTok |
-| `xiaohongshu` | `SiXiaohongshu` | `react-icons/si` | 小紅書 |
-| `other` | `Globe` | `lucide-react` | 其他 |
+| platform      | 圖示            | 來源             | 顯示文字（PLATFORM_LABEL） |
+| ------------- | --------------- | ---------------- | -------------------------- |
+| `youtube`     | `SiYoutube`     | `react-icons/si` | YouTube                    |
+| `instagram`   | `SiInstagram`   | `react-icons/si` | Instagram                  |
+| `threads`     | `SiThreads`     | `react-icons/si` | Threads                    |
+| `tiktok`      | `SiTiktok`      | `react-icons/si` | TikTok                     |
+| `xiaohongshu` | `SiXiaohongshu` | `react-icons/si` | 小紅書                     |
+| `other`       | `Globe`         | `lucide-react`   | 其他                       |
 
 抖音不單獨列：`react-icons/si` 沒收 Douyin 專屬 icon，且 ByteDance 兩個產品 logo 視覺幾乎一樣。要嘛跟 TikTok 撞 icon 無法分辨、要嘛硬塞別的 icon 失真，不如讓抖音走「其他」路徑（後台填 platform_label="抖音"），卡片用 `Globe` 顯示，跟「StreetVoice」「Bilibili」等其他平台同樣處理。
 
@@ -139,14 +144,14 @@ mx-auto w-full max-w-6xl px-4 py-6
 - 尺寸：`size-3.5`（14px）
 - 顏色採各平台真實品牌色：
 
-  | platform | 顏色策略 | 色碼 |
-  | --- | --- | --- |
-  | `youtube` | 單色 | `#FF0000` |
-  | `instagram` | 漸層 | `#833AB4 → #C13584 → #E1306C → #F77737 → #FCAF45`（45° linearGradient） |
-  | `threads` | 單色 | `#000000` |
-  | `tiktok` | chromatic aberration | `#000000` 主體 ＋ `#25F4EE` 左偏 1px ＋ `#FE2C55` 右偏 1px，`mix-blend-mode: screen` |
-  | `xiaohongshu` | 單色 | `#FF2442` |
-  | `other` | 單色 | `#737F84`（莫蘭迪 primary） |
+  | platform      | 顏色策略             | 色碼                                                                                 |
+  | ------------- | -------------------- | ------------------------------------------------------------------------------------ |
+  | `youtube`     | 單色                 | `#FF0000`                                                                            |
+  | `instagram`   | 漸層                 | `#833AB4 → #C13584 → #E1306C → #F77737 → #FCAF45`（45° linearGradient）              |
+  | `threads`     | 單色                 | `#000000`                                                                            |
+  | `tiktok`      | chromatic aberration | `#000000` 主體 ＋ `#25F4EE` 左偏 1px ＋ `#FE2C55` 右偏 1px，`mix-blend-mode: screen` |
+  | `xiaohongshu` | 單色                 | `#FF2442`                                                                            |
+  | `other`       | 單色                 | `#737F84`（莫蘭迪 primary）                                                          |
 
 - Instagram 與 TikTok 因為需要漸層或多層疊加，不能直接用 `react-icons` 預設渲染——統一抽到 `components/platform-icon.tsx`（見 §8.5）處理；其他平台用 `react-icons/si` 或 `lucide-react` + `style={{ color: '#xxxxxx' }}` 即可
 - 每個 icon 包在 `<span aria-label="<platform name>">` 內，提供螢幕閱讀器標籤；platform_label（例如「抖音」「StreetVoice」）若有則覆寫 aria-label
@@ -220,8 +225,8 @@ export const PLATFORM_LABEL: Record<Platform, string> = {
 ```ts
 export type CoverQuery = {
   q?: string
-  artist?: string      // 新增（取代 platform）
-  tag?: string         // 保留
+  artist?: string // 新增（取代 platform）
+  tag?: string // 保留
   sort: CoverSort
   limit: number
   offset: number
@@ -359,6 +364,7 @@ export function ArtistFilterPills({
 ### 8.3 改寫：`components/cover-card.tsx`
 
 依 §3.3 骨架重寫：
+
 - 容器從 `<Link>` 改為 `<article>`
 - 標題包 `<Link>` 並用 `after:absolute after:inset-0` 把整張卡點擊區域覆蓋
 - 平台 icon 改成 `<a>` 包 `<PlatformIcon>`，連到 `cover_links.url`、新分頁開啟、`z-10` 浮上層
@@ -413,12 +419,12 @@ const [{ items, total, hasMore }, topArtists] = await Promise.all([
 
 ## 10. 邊界與錯誤處理
 
-| 情境 | 行為 |
-| --- | --- |
-| `getTopOriginalArtists` 失敗 | 拋錯，由 Next.js error boundary 處理（與既有 query 錯誤一致） |
-| view 不存在（migration 未跑） | 同上，拋錯 |
-| `?artist=` 帶非 DB 既有原唱名 | 列表空、empty state；filter row 無 pill 標選中態 |
-| 縮圖 URL 失效 / 圖片載入失敗 | `bg-muted` 維持灰色佔位（既有行為） |
+| 情境                          | 行為                                                          |
+| ----------------------------- | ------------------------------------------------------------- |
+| `getTopOriginalArtists` 失敗  | 拋錯，由 Next.js error boundary 處理（與既有 query 錯誤一致） |
+| view 不存在（migration 未跑） | 同上，拋錯                                                    |
+| `?artist=` 帶非 DB 既有原唱名 | 列表空、empty state；filter row 無 pill 標選中態              |
+| 縮圖 URL 失效 / 圖片載入失敗  | `bg-muted` 維持灰色佔位（既有行為）                           |
 
 ## 11. 已定案的關鍵選擇
 
