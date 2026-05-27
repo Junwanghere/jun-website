@@ -50,23 +50,46 @@ mx-auto w-full max-w-6xl px-4 py-6
 
 ### 3.3 卡片骨架（單一元件處理所有區間）
 
+採「linked card with linked descendants」a11y 模式——卡片本身是 `<article>` 而非 link；標題包一個 `<Link>` 到詳情頁、用 `::after` 偽元素覆蓋整張卡片；icon 用 `<a>` 包並 `position:relative z-10` 浮在 overlay 上面。HTML 不能巢狀 `<a>`，這個模式是規避方式。
+
 ```tsx
-<Link
-  href={`/covers/${cover.id}`}
-  className="flex gap-3 rounded-2xl bg-card p-3 shadow-sm transition hover:shadow-md md:flex-col md:gap-2"
->
+<article className="relative flex gap-3 rounded-2xl bg-card p-3 shadow-sm transition hover:shadow-md md:flex-col md:gap-2">
   <div
     className="aspect-video w-32 shrink-0 rounded-xl bg-muted md:w-full"
     style={thumbnail_url ? { background: `center/cover no-repeat url('${thumbnail_url}')` } : undefined}
     aria-hidden
   />
   <div className="min-w-0 flex-1">
-    <div className="truncate font-bold text-card-foreground">{title}</div>
+    <h3 className="truncate text-base font-bold text-card-foreground">
+      <Link
+        href={`/covers/${cover.id}`}
+        className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+      >
+        {title}
+      </Link>
+    </h3>
     <div className="truncate text-xs text-muted-foreground">原唱 {original_artist} · {cover_date}</div>
-    <div className="mt-1.5 flex flex-wrap gap-1.5">{platformIcons}</div>
+    <div className="relative z-10 mt-1.5 flex flex-wrap gap-1.5">
+      {cover.cover_links.map((l) => (
+        <a
+          key={l.id}
+          href={l.url}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="inline-flex items-center hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+        >
+          <PlatformIcon platform={l.platform} label={l.platform_label} />
+        </a>
+      ))}
+    </div>
   </div>
-</Link>
+</article>
 ```
+
+重點：
+- `<Link>` 的 `after:absolute after:inset-0` 讓整張卡片可點，但只有「title 文字本身」是 link semantics，整個 article 不需要包 link
+- 平台 icon 容器 `relative z-10` 浮在 overlay 之上，icon click 不會觸發詳情頁
+- 兩條 link 都有獨立 focus ring
 
 ## 4. Filter 機制
 
@@ -128,6 +151,14 @@ mx-auto w-full max-w-6xl px-4 py-6
 - Instagram 與 TikTok 因為需要漸層或多層疊加，不能直接用 `react-icons` 預設渲染——統一抽到 `components/platform-icon.tsx`（見 §8.5）處理；其他平台用 `react-icons/si` 或 `lucide-react` + `style={{ color: '#xxxxxx' }}` 即可
 - 每個 icon 包在 `<span aria-label="<platform name>">` 內，提供螢幕閱讀器標籤；platform_label（例如「抖音」「StreetVoice」）若有則覆寫 aria-label
 - 同一首翻唱若同一平台出現多次（理論上不會但 DB 不強制 unique），全部顯示
+
+### 5.3 互動
+
+- 每個 icon 是一個 `<a href={cover_link.url} target="_blank" rel="noreferrer noopener">`，點擊在新分頁打開該平台的對應貼文
+- 卡片其他區域（縮圖、歌名、原唱、空白）點擊則前往該翻唱的詳情頁 `/covers/[id]`，行為與既有相同
+- 兩種點擊互不干擾：icon 容器用 `relative z-10` 浮在標題 link 的 `::after` overlay 上方（見 §3.3）
+- 鍵盤焦點：Tab 順序為「標題 link → 各 icon link」；icon 滑鼠 hover 用 `opacity-80` 給輕微提示
+- icon link 有獨立的 `focus-visible:ring`
 
 ## 6. 資料層改動
 
@@ -327,7 +358,10 @@ export function ArtistFilterPills({
 
 ### 8.3 改寫：`components/cover-card.tsx`
 
-依 §3.3 骨架重寫，加上 §5 的平台 icon（透過 §8.5 的 `<PlatformIcon>` 元件呼叫）。
+依 §3.3 骨架重寫：
+- 容器從 `<Link>` 改為 `<article>`
+- 標題包 `<Link>` 並用 `after:absolute after:inset-0` 把整張卡點擊區域覆蓋
+- 平台 icon 改成 `<a>` 包 `<PlatformIcon>`，連到 `cover_links.url`、新分頁開啟、`z-10` 浮上層
 
 ### 8.5 新增：`components/platform-icon.tsx`
 
@@ -369,6 +403,9 @@ const [{ items, total, hasMore }, topArtists] = await Promise.all([
   - 點 top 1 → 列表只顯示該原唱的翻唱
   - 點「全部」→ 列表恢復
 - **新增**：DB 完全空時 filter row 隱藏的測試
+- **新增**：卡片 icon 點擊外連測試
+  - 點卡片 icon（例如 YouTube）會在新分頁打開該 URL（用 `page.context().waitForEvent('page')` 等新分頁、驗證 URL）
+  - 點卡片其他區域（標題）會導到 `/covers/[id]`，icon 點擊不會誤觸詳情頁
 
 ### 9.2 單元（vitest）
 
@@ -393,6 +430,7 @@ const [{ items, total, hasMore }, topArtists] = await Promise.all([
 - 平台 icon：五大平台走 `react-icons/si` + Globe（lucide）兜底「其他」
 - icon 顏色採真實品牌色：YT `#FF0000`、IG 漸層、Threads `#000`、TikTok chromatic aberration、小紅書 `#FF2442`、其他 `#737F84`（莫蘭迪 primary）
 - 抽出 `PlatformIcon` 元件統一管理 icon 渲染與顏色（避免 Instagram 漸層與 TikTok 多層邏輯散在各處）
+- 卡片 icon 可點：採「linked card with linked descendants」a11y 模式——卡片本身是 article、標題包 link＋`::after` overlay、icon 包 `<a target="_blank">` 並 `z-10` 浮上層；icon 點擊在新分頁打開平台 URL、不會觸發詳情頁導向
 - Top 3 排序穩定化：cover_count 降冪 → original_artist 升冪
 - Top 3 查詢採 PostgreSQL view（不走 JS 端 aggregate、不引入 ORM）
 - view 命名：`cover_artist_counts`
