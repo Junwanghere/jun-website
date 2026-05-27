@@ -5,7 +5,7 @@ describe('parseSearchParams', () => {
   it('沒有參數時用預設值', () => {
     expect(parseSearchParams({})).toEqual({
       q: undefined,
-      platform: undefined,
+      artist: undefined,
       tag: undefined,
       sort: 'newest',
       limit: 20,
@@ -13,19 +13,23 @@ describe('parseSearchParams', () => {
     })
   })
 
-  it('解析 q / platform / tag / sort', () => {
+  it('解析 q / artist / tag / sort', () => {
     expect(
-      parseSearchParams({ q: '林宥嘉', platform: 'youtube', tag: '抒情', sort: 'oldest' }),
+      parseSearchParams({ q: '林宥嘉', artist: '林宥嘉', tag: '抒情', sort: 'oldest' }),
     ).toMatchObject({
       q: '林宥嘉',
-      platform: 'youtube',
+      artist: '林宥嘉',
       tag: '抒情',
       sort: 'oldest',
     })
   })
 
-  it('忽略不合法的 platform', () => {
-    expect(parseSearchParams({ platform: 'spotify' }).platform).toBeUndefined()
+  it('artist 接受任意字串（白名單由 UI 控制，server 不擋）', () => {
+    expect(parseSearchParams({ artist: '完全沒這個人' }).artist).toBe('完全沒這個人')
+  })
+
+  it('空字串 artist 視為 undefined', () => {
+    expect(parseSearchParams({ artist: '' }).artist).toBeUndefined()
   })
 
   it('cursor 轉成 offset', () => {

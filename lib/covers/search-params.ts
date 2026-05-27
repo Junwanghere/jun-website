@@ -1,12 +1,6 @@
-import { PLATFORMS, type CoverQuery, type Platform, type CoverSort } from './types'
+import { type CoverQuery, type CoverSort } from './types'
 
 const DEFAULT_LIMIT = 20
-
-function asPlatform(v: unknown): Platform | undefined {
-  return typeof v === 'string' && (PLATFORMS as readonly string[]).includes(v)
-    ? (v as Platform)
-    : undefined
-}
 
 function asSort(v: unknown): CoverSort {
   return v === 'oldest' ? 'oldest' : 'newest'
@@ -25,7 +19,7 @@ export function parseSearchParams(
   const get = (k: string) => (Array.isArray(params[k]) ? params[k]?.[0] : params[k])
   return {
     q: get('q') || undefined,
-    platform: asPlatform(get('platform')),
+    artist: get('artist') || undefined,
     tag: get('tag') || undefined,
     sort: asSort(get('sort')),
     limit: DEFAULT_LIMIT,
@@ -36,7 +30,7 @@ export function parseSearchParams(
 export function buildQueryString(q: Partial<CoverQuery>): string {
   const sp = new URLSearchParams()
   if (q.q) sp.set('q', q.q)
-  if (q.platform) sp.set('platform', q.platform)
+  if (q.artist) sp.set('artist', q.artist)
   if (q.tag) sp.set('tag', q.tag)
   if (q.sort && q.sort !== 'newest') sp.set('sort', q.sort)
   if (q.offset) sp.set('cursor', String(q.offset))
