@@ -2,11 +2,7 @@ import { notFound } from 'next/navigation'
 import { CoverForm } from '@/components/admin/cover-form'
 import { getCoverById } from '@/lib/covers/queries'
 
-export default async function EditCoverPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default async function EditCoverPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const cover = await getCoverById(id)
   if (!cover) notFound()
@@ -14,7 +10,7 @@ export default async function EditCoverPage({
   return (
     <div>
       <h1 className="text-xl font-bold">編輯翻唱</h1>
-      <p className="mb-4 text-sm text-muted-foreground">{cover.title}</p>
+      <p className="text-muted-foreground mb-4 text-sm">{cover.title}</p>
       <CoverForm
         initialValues={{
           id: cover.id,

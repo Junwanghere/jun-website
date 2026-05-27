@@ -26,7 +26,7 @@ export function PlatformLinkFields({ control }: { control: Control<CoverFormValu
 
       <ul className="space-y-2">
         {fields.map((f, idx) => (
-          <li key={f.id} className="rounded-xl border border-border bg-card p-3">
+          <li key={f.id} className="border-border bg-card rounded-xl border p-3">
             <div className="grid grid-cols-[120px_1fr_auto] items-center gap-2">
               <Controller
                 control={control}
@@ -34,7 +34,7 @@ export function PlatformLinkFields({ control }: { control: Control<CoverFormValu
                 render={({ field }) => (
                   <select
                     {...field}
-                    className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+                    className="border-input bg-background h-9 rounded-md border px-2 text-sm"
                   >
                     {PLATFORMS.map((p) => (
                       <option key={p} value={p}>

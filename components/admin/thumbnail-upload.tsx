@@ -36,12 +36,8 @@ export function ThumbnailUpload({ value, onChange }: Props) {
     <div className="space-y-2">
       <div className="flex items-center gap-3">
         <div
-          className="size-20 shrink-0 rounded-xl bg-muted"
-          style={
-            value
-              ? { background: `center/cover no-repeat url('${value}')` }
-              : undefined
-          }
+          className="bg-muted size-20 shrink-0 rounded-xl"
+          style={value ? { background: `center/cover no-repeat url('${value}')` } : undefined}
         />
         <div className="space-y-1">
           <label className="inline-block">
@@ -73,7 +69,7 @@ export function ThumbnailUpload({ value, onChange }: Props) {
           )}
         </div>
       </div>
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p className="text-destructive text-xs">{error}</p>}
     </div>
   )
 }

@@ -4,7 +4,7 @@ export default function AdminHome() {
   return (
     <div className="space-y-3">
       <h1 className="text-xl font-bold">後台首頁</h1>
-      <p className="text-sm text-muted-foreground">管理你的內容</p>
+      <p className="text-muted-foreground text-sm">管理你的內容</p>
       <div className="mt-3 flex flex-col gap-3">
         <PortalCard
           href="/admin/covers"

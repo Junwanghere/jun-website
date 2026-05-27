@@ -43,7 +43,7 @@ export type CoverSort = 'newest' | 'oldest'
 
 export type CoverQuery = {
   q?: string
-  artist?: string  // 取代 platform
+  artist?: string // 取代 platform
   tag?: string
   sort: CoverSort
   limit: number

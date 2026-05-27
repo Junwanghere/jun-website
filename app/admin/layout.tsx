@@ -5,7 +5,7 @@ import { LogoutButton } from './logout-button'
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-dvh">
-      <header className="border-b border-border bg-card">
+      <header className="border-border bg-card border-b">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/admin" className="font-bold">
