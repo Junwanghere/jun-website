@@ -114,8 +114,19 @@ mx-auto w-full max-w-6xl px-4 py-6
 
 - 純 icon 排列，不包 pill 背景：`flex flex-wrap gap-1.5`
 - 尺寸：`size-3.5`（14px）
-- 顏色：YouTube 用 `text-primary` 強調，其他用 `text-foreground` / `text-muted-foreground`
-- 每個 icon 包在 `<span aria-label="<platform name>">` 內，提供螢幕閱讀器標籤
+- 顏色採各平台真實品牌色：
+
+  | platform | 顏色策略 | 色碼 |
+  | --- | --- | --- |
+  | `youtube` | 單色 | `#FF0000` |
+  | `instagram` | 漸層 | `#833AB4 → #C13584 → #E1306C → #F77737 → #FCAF45`（45° linearGradient） |
+  | `threads` | 單色 | `#000000` |
+  | `tiktok` | chromatic aberration | `#000000` 主體 ＋ `#25F4EE` 左偏 1px ＋ `#FE2C55` 右偏 1px，`mix-blend-mode: screen` |
+  | `xiaohongshu` | 單色 | `#FF2442` |
+  | `other` | 單色 | `#737F84`（莫蘭迪 primary） |
+
+- Instagram 與 TikTok 因為需要漸層或多層疊加，不能直接用 `react-icons` 預設渲染——統一抽到 `components/platform-icon.tsx`（見 §8.5）處理；其他平台用 `react-icons/si` 或 `lucide-react` + `style={{ color: '#xxxxxx' }}` 即可
+- 每個 icon 包在 `<span aria-label="<platform name>">` 內，提供螢幕閱讀器標籤；platform_label（例如「抖音」「StreetVoice」）若有則覆寫 aria-label
 - 同一首翻唱若同一平台出現多次（理論上不會但 DB 不強制 unique），全部顯示
 
 ## 6. 資料層改動
@@ -316,7 +327,20 @@ export function ArtistFilterPills({
 
 ### 8.3 改寫：`components/cover-card.tsx`
 
-依 §3.3 骨架重寫，加上 §5 的平台 icon 對應。
+依 §3.3 骨架重寫，加上 §5 的平台 icon（透過 §8.5 的 `<PlatformIcon>` 元件呼叫）。
+
+### 8.5 新增：`components/platform-icon.tsx`
+
+封裝每個平台的 icon 渲染與真實品牌色：
+
+- 接受 `platform: Platform`、可選 `label?: string`（用於 platform="other" 時的 aria-label 覆寫）、可選 `size?: number`（預設 14）
+- 內部依 platform 選 render path：
+  - YouTube / Threads / 小紅書 → `SiYoutube` / `SiThreads` / `SiXiaohongshu` + inline `style={{ color: ... }}`
+  - Instagram → 自定 inline SVG + `<linearGradient>`（路徑與 `SiInstagram` 一致，fill 用 `url(#ig-grad)`）
+  - TikTok → 三層 SVG 疊（青/紅各偏移 1px、`mix-blend-mode: screen`、最上層黑）
+  - other → `Globe` from `lucide-react` + `color: #737F84`
+- 對應 aria-label 從 `PLATFORM_LABEL` 取；若 platform_label 提供則覆寫
+- 同支元件未來也會被翻唱詳情頁 `/covers/[id]` 使用（本次 spec 不改詳情頁，但元件設計上預留復用）
 
 ### 8.4 改寫：`app/covers/page.tsx`
 
@@ -367,6 +391,8 @@ const [{ items, total, hasMore }, topArtists] = await Promise.all([
 - 縮圖比例 16:9
 - 平台支援擴展：YouTube、Instagram、Threads、TikTok、小紅書、其他（抖音歸入「其他」+ platform_label）
 - 平台 icon：五大平台走 `react-icons/si` + Globe（lucide）兜底「其他」
+- icon 顏色採真實品牌色：YT `#FF0000`、IG 漸層、Threads `#000`、TikTok chromatic aberration、小紅書 `#FF2442`、其他 `#737F84`（莫蘭迪 primary）
+- 抽出 `PlatformIcon` 元件統一管理 icon 渲染與顏色（避免 Instagram 漸層與 TikTok 多層邏輯散在各處）
 - Top 3 排序穩定化：cover_count 降冪 → original_artist 升冪
 - Top 3 查詢採 PostgreSQL view（不走 JS 端 aggregate、不引入 ORM）
 - view 命名：`cover_artist_counts`
