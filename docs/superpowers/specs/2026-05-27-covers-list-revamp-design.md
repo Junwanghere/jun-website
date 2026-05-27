@@ -19,7 +19,7 @@
 - 拿掉平台 filter，新增原唱 filter（單選，全部 + Top 3）
 - 卡片平台標記由文字（YT/IG/TH）改為 icon
 - 新增 PostgreSQL view 供 top 3 原唱查詢使用
-- 擴充平台 enum：新增 TikTok、抖音、小紅書三個官方值（後台表單下拉、icon mapping 跟著支援）
+- 擴充平台 enum：新增 TikTok、小紅書兩個官方值（後台表單下拉、icon mapping 跟著支援）。抖音不單獨列為 enum 值，沿用既有「其他 + platform_label」機制處理
 
 **非本次範圍**
 
@@ -105,11 +105,10 @@ mx-auto w-full max-w-6xl px-4 py-6
 | `instagram` | `SiInstagram` | `react-icons/si` | Instagram |
 | `threads` | `SiThreads` | `react-icons/si` | Threads |
 | `tiktok` | `SiTiktok` | `react-icons/si` | TikTok |
-| `douyin` | `Music` | `lucide-react` | 抖音 |
 | `xiaohongshu` | `SiXiaohongshu` | `react-icons/si` | 小紅書 |
 | `other` | `Globe` | `lucide-react` | 其他 |
 
-關於抖音的選擇：`react-icons/si` 沒收 Douyin（與 TikTok 同 ByteDance、logo 視覺幾乎一樣）。若兩者都用 `SiTiktok`，同一翻唱同時連抖音 + TikTok 時會出現重複 icon，無法區分。改用 lucide 的 `Music`（音符）讓兩者視覺上有差，aria-label 補上「抖音」確認意圖。
+抖音不單獨列：`react-icons/si` 沒收 Douyin 專屬 icon，且 ByteDance 兩個產品 logo 視覺幾乎一樣。要嘛跟 TikTok 撞 icon 無法分辨、要嘛硬塞別的 icon 失真，不如讓抖音走「其他」路徑（後台填 platform_label="抖音"），卡片用 `Globe` 顯示，跟「StreetVoice」「Bilibili」等其他平台同樣處理。
 
 ### 5.2 樣式
 
@@ -142,7 +141,7 @@ alter table public.cover_links
   add constraint cover_links_platform_check
   check (platform in (
     'youtube', 'instagram', 'threads',
-    'tiktok', 'douyin', 'xiaohongshu',
+    'tiktok', 'xiaohongshu',
     'other'
   ));
 ```
@@ -159,7 +158,6 @@ export const PLATFORMS = [
   'instagram',
   'threads',
   'tiktok',
-  'douyin',
   'xiaohongshu',
   'other',
 ] as const
@@ -170,7 +168,6 @@ export const PLATFORM_LABEL: Record<Platform, string> = {
   instagram: 'Instagram',
   threads: 'Threads',
   tiktok: 'TikTok',
-  douyin: '抖音',
   xiaohongshu: '小紅書',
   other: '其他',
 }
@@ -368,8 +365,8 @@ const [{ items, total, hasMore }, topArtists] = await Promise.all([
 - 原唱 filter 採 Top 3 + 全部，不做「其他」
 - 響應式：mobile 列表（左圖右文）、tablet 2 col grid、desktop 3 col grid（皆上圖下文）
 - 縮圖比例 16:9
-- 平台支援擴展：YouTube、Instagram、Threads、TikTok、抖音、小紅書、其他
-- 平台 icon：六大平台 + Globe 兜底；抖音用 lucide `Music`（避免與 TikTok 撞 logo），其餘走 `react-icons/si`
+- 平台支援擴展：YouTube、Instagram、Threads、TikTok、小紅書、其他（抖音歸入「其他」+ platform_label）
+- 平台 icon：五大平台走 `react-icons/si` + Globe（lucide）兜底「其他」
 - Top 3 排序穩定化：cover_count 降冪 → original_artist 升冪
 - Top 3 查詢採 PostgreSQL view（不走 JS 端 aggregate、不引入 ORM）
 - view 命名：`cover_artist_counts`
