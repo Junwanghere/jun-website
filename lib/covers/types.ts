@@ -1,10 +1,19 @@
-export const PLATFORMS = ['youtube', 'instagram', 'threads', 'other'] as const
+export const PLATFORMS = [
+  'youtube',
+  'instagram',
+  'threads',
+  'tiktok',
+  'xiaohongshu',
+  'other',
+] as const
 export type Platform = (typeof PLATFORMS)[number]
 
 export const PLATFORM_LABEL: Record<Platform, string> = {
   youtube: 'YouTube',
   instagram: 'Instagram',
   threads: 'Threads',
+  tiktok: 'TikTok',
+  xiaohongshu: '小紅書',
   other: '其他',
 }
 
@@ -34,7 +43,7 @@ export type CoverSort = 'newest' | 'oldest'
 
 export type CoverQuery = {
   q?: string
-  platform?: Platform
+  artist?: string  // 取代 platform
   tag?: string
   sort: CoverSort
   limit: number
