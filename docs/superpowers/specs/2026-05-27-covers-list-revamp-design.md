@@ -19,6 +19,7 @@
 - 拿掉平台 filter，新增原唱 filter（單選，全部 + Top 3）
 - 卡片平台標記由文字（YT/IG/TH）改為 icon
 - 新增 PostgreSQL view 供 top 3 原唱查詢使用
+- 擴充平台 enum：新增 TikTok、抖音、小紅書三個官方值（後台表單下拉、icon mapping 跟著支援）
 
 **非本次範圍**
 
@@ -98,12 +99,17 @@ mx-auto w-full max-w-6xl px-4 py-6
 
 ### 5.1 對應表
 
-| platform | 圖示 | 來源 |
-| --- | --- | --- |
-| `youtube` | `SiYoutube` | `react-icons/si` |
-| `instagram` | `SiInstagram` | `react-icons/si` |
-| `threads` | `SiThreads` | `react-icons/si` |
-| `other` | `Globe` | `lucide-react` |
+| platform | 圖示 | 來源 | 顯示文字（PLATFORM_LABEL） |
+| --- | --- | --- | --- |
+| `youtube` | `SiYoutube` | `react-icons/si` | YouTube |
+| `instagram` | `SiInstagram` | `react-icons/si` | Instagram |
+| `threads` | `SiThreads` | `react-icons/si` | Threads |
+| `tiktok` | `SiTiktok` | `react-icons/si` | TikTok |
+| `douyin` | `Music` | `lucide-react` | 抖音 |
+| `xiaohongshu` | `SiXiaohongshu` | `react-icons/si` | 小紅書 |
+| `other` | `Globe` | `lucide-react` | 其他 |
+
+關於抖音的選擇：`react-icons/si` 沒收 Douyin（與 TikTok 同 ByteDance、logo 視覺幾乎一樣）。若兩者都用 `SiTiktok`，同一翻唱同時連抖音 + TikTok 時會出現重複 icon，無法區分。改用 lucide 的 `Music`（音符）讓兩者視覺上有差，aria-label 補上「抖音」確認意圖。
 
 ### 5.2 樣式
 
@@ -126,7 +132,49 @@ group by original_artist;
 
 權限：view 自動繼承 `covers` 表的 RLS policy（`covers_select_all` 允許任何人讀），所以匿名 client 可直接查 view。
 
+### 6.1b 擴充平台 enum（migration `0004_extend_platforms.sql`）
+
+```sql
+alter table public.cover_links
+  drop constraint cover_links_platform_check;
+
+alter table public.cover_links
+  add constraint cover_links_platform_check
+  check (platform in (
+    'youtube', 'instagram', 'threads',
+    'tiktok', 'douyin', 'xiaohongshu',
+    'other'
+  ));
+```
+
+說明：Postgres check constraint 不能 ALTER，要 drop + 重 add。既有 row 不會被影響（已存在的值都在新清單裡）。
+
 ### 6.2 `lib/covers/types.ts`
+
+`PLATFORMS` 與 `Platform` 擴充：
+
+```ts
+export const PLATFORMS = [
+  'youtube',
+  'instagram',
+  'threads',
+  'tiktok',
+  'douyin',
+  'xiaohongshu',
+  'other',
+] as const
+export type Platform = (typeof PLATFORMS)[number]
+
+export const PLATFORM_LABEL: Record<Platform, string> = {
+  youtube: 'YouTube',
+  instagram: 'Instagram',
+  threads: 'Threads',
+  tiktok: 'TikTok',
+  douyin: '抖音',
+  xiaohongshu: '小紅書',
+  other: '其他',
+}
+```
 
 `CoverQuery` 型別調整：
 
@@ -141,7 +189,9 @@ export type CoverQuery = {
 }
 ```
 
-`Platform` 型別本身保留（卡片仍要顯示平台 icon）。`platform: Platform` 從 `CoverQuery` 移除。
+`platform: Platform` 從 `CoverQuery` 移除（Platform 型別本身保留，卡片仍要顯示平台 icon）。
+
+`PLATFORMS` 陣列同時驅動：(1) `cover-card.tsx` 的 icon mapping、(2) `coverFormSchema` 的 `z.enum(PLATFORMS)`、(3) `PlatformLinkFields` 的 select 下拉選項——所以擴充 enum 後三處下拉/驗證會自動跟著加，不需手動同步。
 
 ### 6.3 `lib/covers/search-params.ts`
 
@@ -318,10 +368,12 @@ const [{ items, total, hasMore }, topArtists] = await Promise.all([
 - 原唱 filter 採 Top 3 + 全部，不做「其他」
 - 響應式：mobile 列表（左圖右文）、tablet 2 col grid、desktop 3 col grid（皆上圖下文）
 - 縮圖比例 16:9
-- 平台 icon：`react-icons/si` 三大平台 + `lucide-react` Globe 兜底
+- 平台支援擴展：YouTube、Instagram、Threads、TikTok、抖音、小紅書、其他
+- 平台 icon：六大平台 + Globe 兜底；抖音用 lucide `Music`（避免與 TikTok 撞 logo），其餘走 `react-icons/si`
 - Top 3 排序穩定化：cover_count 降冪 → original_artist 升冪
 - Top 3 查詢採 PostgreSQL view（不走 JS 端 aggregate、不引入 ORM）
 - view 命名：`cover_artist_counts`
+- 平台 enum 擴充採 drop + 重 add check constraint（Postgres 不支援 ALTER check）
 
 ## 12. 開放問題
 
