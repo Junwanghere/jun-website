@@ -1,0 +1,10 @@
+-- 此專案的種子資料刻意不放在這裡。
+--
+-- auth admin 帳號 與 covers 真資料 都由 `pnpm db:reset` 處理：
+--   supabase db reset → pnpm seed:admin → pnpm seed:covers
+--
+-- 原因：auth.users 直接用 SQL 插入需手刻 bcrypt 密碼與 auth.identities，
+-- 且欄位隨 Supabase 版本變動而脆弱；改用 GoTrue admin API（seed-admin.mjs）較穩健。
+-- covers 的真實來源是 scripts/youtube-covers.json，由 seed-youtube-covers.mjs 灌入。
+--
+-- 本檔僅為滿足 config.toml 的 [db.seed].sql_paths = ["./seed.sql"]，避免 db reset 警告。
