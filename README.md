@@ -15,23 +15,21 @@ Next.js（App Router）／ TypeScript ／ Tailwind CSS v4 ／ shadcn/ui（Base U
 
 ## 第一次起動
 
+任何一台新電腦，照以下步驟即可重現完整本機環境：
+
 ```bash
+git clone <repo-url>
+cd jun-website
 pnpm install
-supabase start                  # 啟動本機 Supabase（OrbStack 需在執行中）
-cp .env.local.example .env.local
-# 把 supabase status 印出的 publishable key（NEXT_PUBLIC_SUPABASE_ANON_KEY）
-# 與 secret key（SUPABASE_SERVICE_ROLE_KEY）填入 .env.local
+cp .env.local.example .env.local   # keys 已是本機固定預設值，通常不需修改
+supabase start                      # 啟動本機 Supabase（OrbStack/Docker 需執行中）
+pnpm db:reset                       # 套用 migration + 建 admin 帳號 + 灌入 covers 真資料
+pnpm dev                            # http://localhost:3000
 ```
 
-到 [Supabase Studio](http://127.0.0.1:54323) → Authentication → Add user，建立 admin 帳號，
-email 要對應 `.env.local` 的 `ADMIN_EMAIL_ALLOWLIST`，並把同樣的 email/密碼填到
-`E2E_ADMIN_EMAIL` / `E2E_ADMIN_PASSWORD`（E2E 測試會用）。
-
-```bash
-pnpm dev
-```
-
-打開 http://localhost:3000。
+`pnpm db:reset` 會自動建立 admin 帳號（帳密取自 `.env.local` 的 `E2E_ADMIN_EMAIL` /
+`E2E_ADMIN_PASSWORD`，需與 `ADMIN_EMAIL_ALLOWLIST` 相符），**不需要再手動到 Studio 建帳號**。
+之後要把資料庫重置回乾淨一致狀態，隨時再跑一次 `pnpm db:reset` 即可。
 
 ## 測試
 
@@ -49,6 +47,8 @@ pnpm format:check
 | `supabase start` / `supabase stop` | 啟動／停止本機 Supabase 堆疊                                         |
 | `supabase status`                  | 顯示本機 API URL、anon／service role key、Studio URL                 |
 | `supabase db reset`                | 套用所有 migration 並重置 DB（會清掉 auth users，需重建 admin 帳號） |
+| `pnpm db:reset`                    | 重置 DB：套 migration + 建 admin + 灌 covers（一鍵還原一致狀態）     |
+| `pnpm seed:admin`                  | 冪等建立本機 admin 帳號                                              |
 | `supabase migration new <name>`    | 產生新的 migration 檔                                                |
 | `pnpm dev`                         | 啟動 Next.js dev server                                              |
 | `pnpm build`                       | 編譯生產版本                                                         |
