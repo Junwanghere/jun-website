@@ -22,7 +22,10 @@ for (const step of steps) {
   console.log(`\n=== ${step.label} ===`)
   const r = spawnSync(step.cmd, step.args, { stdio: 'inherit' })
   if (r.status !== 0) {
-    console.error(`\n✗ Step failed: ${step.label} (exit ${r.status ?? 'null'})`)
+    // r.error 出現在指令本身無法執行時（例如沒裝 supabase CLI → ENOENT），
+    // 這時 status 是 null，印 error.message 比 "exit null" 好懂。
+    const detail = r.error ? r.error.message : `exit ${r.status}`
+    console.error(`\n✗ Step failed: ${step.label} (${detail})`)
     process.exit(r.status ?? 1)
   }
 }

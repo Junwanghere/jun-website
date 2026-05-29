@@ -26,7 +26,7 @@ function loadEnvLocal() {
   const raw = readFileSync(resolve(REPO_ROOT, '.env.local'), 'utf8')
   const env = {}
   for (const line of raw.split('\n')) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/)
+    const m = line.match(/^([A-Z0-9_]+)=(.*)$/)
     if (m) env[m[1]] = m[2].trim()
   }
   return env
