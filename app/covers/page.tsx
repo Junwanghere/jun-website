@@ -24,8 +24,9 @@ export default async function CoversPage({
   ])
 
   return (
-    <main className="min-h-dvh px-4 py-6">
-      <div className="mx-auto w-full max-w-6xl">
+    <main className="min-h-dvh">
+      {/* 上方標題區——會隨頁面捲走 */}
+      <div className="mx-auto w-full max-w-6xl px-4 pt-6">
         <Link
           href="/"
           className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm"
@@ -37,15 +38,23 @@ export default async function CoversPage({
           <h1 className="text-2xl font-bold">翻唱</h1>
           <span className="text-primary text-sm font-bold">{total} 首</span>
         </div>
+      </div>
 
-        <div className="mt-3 md:max-w-md">
-          <SearchInput defaultValue={query.q} />
+      {/* sticky 控制列：搜尋 + filter。固定貼頂、整段 bg-background 蓋住下面卡片 */}
+      <div className="border-border bg-background sticky top-0 z-20 mt-3 border-b py-3">
+        <div className="mx-auto w-full max-w-6xl px-4">
+          <div className="md:max-w-md">
+            <SearchInput defaultValue={query.q} />
+          </div>
+          <div className="mt-3">
+            <ArtistFilterPills topArtists={topArtists} active={query.artist} />
+          </div>
         </div>
-        <div className="mt-3">
-          <ArtistFilterPills topArtists={topArtists} active={query.artist} />
-        </div>
+      </div>
 
-        <ul className="mt-4 flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+      {/* 結果區 */}
+      <div className="mx-auto w-full max-w-6xl px-4 pt-4 pb-6">
+        <ul className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-3">
           {items.length === 0 ? (
             <li className="bg-card text-muted-foreground rounded-2xl p-6 text-center text-sm md:col-span-2 lg:col-span-3">
               還沒有符合條件的翻唱
