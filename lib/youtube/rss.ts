@@ -54,3 +54,8 @@ export async function fetchChannelFeed(channelId: string): Promise<FeedEntry[]> 
   if (!res.ok) throw new Error(`YouTube RSS ${res.status}`)
   return parseChannelFeed(await res.text())
 }
+
+// 依已收錄的 videoId 集合過濾，回傳尚未收錄的新片。
+export function selectNewEntries(entries: FeedEntry[], existingIds: Set<string>): FeedEntry[] {
+  return entries.filter((e) => !existingIds.has(e.videoId))
+}
