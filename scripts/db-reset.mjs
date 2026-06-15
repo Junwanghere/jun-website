@@ -3,7 +3,7 @@
  * 一鍵把本機 Supabase 重建到一致狀態：
  *   1. supabase db reset  → 套用所有 migration + 跑 supabase/seed.sql
  *   2. pnpm seed:admin    → 冪等建立 admin 帳號
- *   3. pnpm seed:covers   → 灌入 20 首真資料
+ *   3. pnpm seed:covers   → 灌入 120 首真資料
  *
  * 任一步失敗即中止並回傳非零 exit code。
  *
