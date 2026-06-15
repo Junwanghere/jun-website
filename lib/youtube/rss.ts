@@ -13,3 +13,43 @@ export function parseCoverTitle(rawTitle: string): {
   if (!song || !artist) return { song: null, artist: null }
   return { song, artist }
 }
+
+export type FeedEntry = {
+  videoId: string
+  title: string
+  published: string
+}
+
+// 輕量解析（不加 XML 套件）：先切出每個 <entry>…</entry>，再各自抓欄位。
+// 注意只取 entry 內的 <title>，避免抓到 feed 頂層的頻道標題。
+export function parseChannelFeed(xml: string): FeedEntry[] {
+  const entries: FeedEntry[] = []
+  const blocks = xml.match(/<entry[\s>][\s\S]*?<\/entry>/g) ?? []
+  for (const block of blocks) {
+    const videoId = block.match(/<yt:videoId>(.*?)<\/yt:videoId>/)?.[1]
+    const title = block.match(/<title>([\s\S]*?)<\/title>/)?.[1]
+    const published = block.match(/<published>(.*?)<\/published>/)?.[1]
+    if (videoId && title && published) {
+      entries.push({ videoId, title: decodeXml(title.trim()), published })
+    }
+  }
+  return entries
+}
+
+function decodeXml(s: string): string {
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+}
+
+export async function fetchChannelFeed(channelId: string): Promise<FeedEntry[]> {
+  const res = await fetch(
+    `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`,
+    { cache: 'no-store' },
+  )
+  if (!res.ok) throw new Error(`YouTube RSS ${res.status}`)
+  return parseChannelFeed(await res.text())
+}
