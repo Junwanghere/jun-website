@@ -15,9 +15,10 @@ import { saveCover } from '@/app/admin/covers/actions'
 
 type Props = {
   initialValues?: Partial<CoverFormValues> & { id?: string }
+  status?: 'draft' | 'published'
 }
 
-export function CoverForm({ initialValues }: Props) {
+export function CoverForm({ initialValues, status }: Props) {
   const router = useRouter()
   const {
     control,
@@ -57,14 +58,14 @@ export function CoverForm({ initialValues }: Props) {
     }
   }, [links, thumb, setValue])
 
-  async function onSubmit(values: CoverFormValues) {
-    await saveCover({ id: initialValues?.id, values })
+  async function onSubmit(values: CoverFormValues, publishAs?: 'draft' | 'published') {
+    await saveCover({ id: initialValues?.id, values, status: publishAs })
     router.push('/admin/covers')
     router.refresh()
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit((v) => onSubmit(v))} className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="title">歌名</Label>
         <Input id="title" {...register('title')} />
@@ -137,9 +138,29 @@ export function CoverForm({ initialValues }: Props) {
         <Button type="button" variant="ghost" onClick={() => router.back()}>
           取消
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? '儲存中⋯' : '儲存'}
-        </Button>
+        {status === 'draft' ? (
+          <>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isSubmitting}
+              onClick={handleSubmit((v) => onSubmit(v, 'draft'))}
+            >
+              先存草稿
+            </Button>
+            <Button
+              type="button"
+              disabled={isSubmitting}
+              onClick={handleSubmit((v) => onSubmit(v, 'published'))}
+            >
+              {isSubmitting ? '發布中⋯' : '發布'}
+            </Button>
+          </>
+        ) : (
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? '儲存中⋯' : '儲存'}
+          </Button>
+        )}
       </div>
     </form>
   )

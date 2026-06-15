@@ -12,7 +12,11 @@ export async function deleteCover(id: string) {
   revalidatePath('/covers')
 }
 
-export async function saveCover(input: { id?: string; values: CoverFormValues }) {
+export async function saveCover(input: {
+  id?: string
+  values: CoverFormValues
+  status?: 'draft' | 'published'
+}) {
   const parsed = coverFormSchema.safeParse(input.values)
   if (!parsed.success) throw new Error('表單資料不合法')
   const values = parsed.data
@@ -29,6 +33,8 @@ export async function saveCover(input: { id?: string; values: CoverFormValues })
         description: values.description,
         tags: values.tags,
         thumbnail_url: values.thumbnail_url,
+        // 只有明確指定 status 時才更新（編輯已發布項目時不動其狀態）
+        ...(input.status ? { status: input.status } : {}),
       })
       .eq('id', coverId)
     if (error) throw error
@@ -45,6 +51,8 @@ export async function saveCover(input: { id?: string; values: CoverFormValues })
         description: values.description,
         tags: values.tags,
         thumbnail_url: values.thumbnail_url,
+        // 手動新增的翻唱預設為已發布
+        status: input.status ?? 'published',
       })
       .select('id')
       .single()
