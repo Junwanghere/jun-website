@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { coverFormSchema, type CoverFormValues } from '@/lib/covers/schema'
+import { syncYouTubeDrafts } from '@/lib/covers/sync-youtube'
 
 export async function deleteCover(id: string) {
   const supabase = await createClient()
@@ -72,4 +73,10 @@ export async function saveCover(input: {
   revalidatePath('/admin/covers')
   revalidatePath('/covers')
   revalidatePath(`/covers/${coverId}`)
+}
+
+export async function syncDraftsNow() {
+  const result = await syncYouTubeDrafts()
+  revalidatePath('/admin/covers')
+  return result
 }
