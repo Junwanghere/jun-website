@@ -43,7 +43,8 @@ const OVERRIDES = {
 }
 
 // 移除標題尾端的「翻唱標記」括號（右括號可能缺、可能全形、可能無空格）
-const MARKER = /\s*[（(]\s*(cover\s*by\s*jun|jun\s*cover|jun\s*practice|cover\s*by\s*shi(?:ao|er)\s*jun)\s*[)）]?\s*$/i
+const MARKER =
+  /\s*[（(]\s*(cover\s*by\s*jun|jun\s*cover|jun\s*practice|cover\s*by\s*shi(?:ao|er)\s*jun)\s*[)）]?\s*$/i
 
 function parseRegular(title) {
   let t = title.replace(MARKER, '').trim()
@@ -73,7 +74,9 @@ function parseRegular(title) {
   return null // 無法解析
 }
 
-const lines = readFileSync(tsvPath, 'utf8').split('\n').filter((l) => l.trim())
+const lines = readFileSync(tsvPath, 'utf8')
+  .split('\n')
+  .filter((l) => l.trim())
 const out = []
 const unresolved = []
 

@@ -14,6 +14,7 @@
 **現況**：後端排序已完整，僅缺 UI。
 
 **設計**：
+
 - 新增 `components/sort-pills.tsx`：兩顆 pill「最新」「最舊」，client component，沿用既有 URL-param + `router.push` 模式。
   - 「最新」為預設：選它時移除 `sort` 參數；「最舊」設 `sort=oldest`。
   - 切換時一併 `delete('cursor')`（回到第一頁）。
@@ -26,6 +27,7 @@
 **決策**：純顯示時包上，資料本身維持乾淨純文字（搜尋、後台編輯、JSON/DB 皆不變）。
 
 **設計**：
+
 - 新增 `lib/covers/format.ts`：
   ```ts
   export function formatSongTitle(title: string): string
@@ -43,6 +45,7 @@
 **技術背景**：篩選/搜尋/排序的導頁包在 `startTransition` 內，React 預設會「保留舊內容」而不顯示 fallback。為了在這些切換時也顯示骨架，採用「以查詢身分為 key 的 Suspense 邊界」——key 改變會建立全新邊界、無既有內容，因此即使在 transition 中也會顯示 fallback。
 
 **設計**：
+
 - 新增 `components/cover-card-skeleton.tsx`：用既有 `components/ui/skeleton.tsx`（純 Tailwind `animate-pulse`，無第三方套件）拼出對齊真實卡片的骨架（縮圖塊＋兩行文字＋一排 icon 佔位）。
 - 新增 `app/covers/loading.tsx`：首次進入路由時顯示一格骨架網格（佈局對齊真實清單的 grid）。
 - 新增 `components/cover-results.tsx`：async server component，負責呼叫 `listCovers(query)` 並渲染清單、載入更多、`{total} 首` 計數與空狀態。
@@ -50,7 +53,10 @@
   - 保留並即時渲染篩選列（搜尋框、排序 pill、原唱 pill）。
   - 結果區改為：
     ```tsx
-    <Suspense key={`${query.q ?? ''}|${query.artist ?? ''}|${query.sort}`} fallback={<CoverGridSkeleton count={query.limit} />}>
+    <Suspense
+      key={`${query.q ?? ''}|${query.artist ?? ''}|${query.sort}`}
+      fallback={<CoverGridSkeleton count={query.limit} />}
+    >
       <CoverResults query={query} />
     </Suspense>
     ```
@@ -60,6 +66,7 @@
 ## 受影響檔案
 
 新增：
+
 - `components/sort-pills.tsx`
 - `components/filter-pill.tsx`
 - `lib/covers/format.ts`
@@ -68,6 +75,7 @@
 - `app/covers/loading.tsx`
 
 修改：
+
 - `app/covers/page.tsx`（拆出結果區 + Suspense + 排序 pill）
 - `components/artist-filter-pills.tsx`（改用共用 `FilterPill`）
 - `components/cover-card.tsx`（歌名包 〈〉）

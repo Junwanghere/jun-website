@@ -48,9 +48,25 @@ test('DB 空時 filter row 隱藏，列表顯示 empty state', async ({ page }) 
 
 test('點卡片標題進詳情頁', async ({ page }) => {
   await page.goto('/covers')
-  await page.getByRole('link', { name: '交換餘生' }).click()
+  await page.getByRole('link', { name: '〈交換餘生〉' }).click()
   await expect(page.locator('h1', { hasText: '交換餘生' })).toBeVisible()
   await expect(page.locator('iframe')).toBeVisible()
+})
+
+test('排序：最新 / 最舊 切換改變第一張卡片', async ({ page }) => {
+  await page.goto('/covers')
+
+  const firstNewest = await page.locator('article h3').first().innerText()
+
+  await page.getByRole('button', { name: '最舊' }).click()
+  await expect(page).toHaveURL(/sort=oldest/)
+
+  const firstOldest = await page.locator('article h3').first().innerText()
+  expect(firstOldest).not.toBe(firstNewest)
+
+  await page.getByRole('button', { name: '最新' }).click()
+  await expect(page).not.toHaveURL(/sort=oldest/)
+  await expect(page.locator('article h3').first()).toHaveText(firstNewest)
 })
 
 test('icon link 設定為新分頁開啟、href 指向平台 URL', async ({ page }) => {

@@ -15,6 +15,7 @@
 ## File Structure
 
 新增：
+
 - `lib/covers/format.ts` — `formatSongTitle()` 純函式
 - `components/filter-pill.tsx` — 共用 pill（排序、原唱共用）
 - `components/sort-pills.tsx` — 最新／最舊排序控制
@@ -23,6 +24,7 @@
 - `app/covers/loading.tsx` — 路由層首次載入骨架
 
 修改：
+
 - `components/artist-filter-pills.tsx` — 改用 `FilterPill`
 - `components/cover-card.tsx` — 歌名包 〈〉
 - `app/covers/[id]/page.tsx` — 歌名包 〈〉（h1 + iframe title）
@@ -34,12 +36,14 @@
 ## Task 1: `formatSongTitle` 純函式
 
 **Files:**
+
 - Create: `lib/covers/format.ts`
 - Test: `tests/lib/format.test.ts`
 
 - [ ] **Step 1: 寫失敗測試**
 
 `tests/lib/format.test.ts`:
+
 ```ts
 import { describe, it, expect } from 'vitest'
 import { formatSongTitle } from '@/lib/covers/format'
@@ -68,6 +72,7 @@ Expected: FAIL（`formatSongTitle` 未定義 / 模組不存在）
 - [ ] **Step 3: 實作**
 
 `lib/covers/format.ts`:
+
 ```ts
 /** 純顯示用：把歌名包上單書名號 〈〉。資料層不使用此函式。 */
 export function formatSongTitle(title: string): string {
@@ -94,6 +99,7 @@ git commit -m "feat(covers): add formatSongTitle helper (display-only 〈〉)"
 ## Task 2: 套用 〈〉 於卡片與詳情頁
 
 **Files:**
+
 - Modify: `components/cover-card.tsx`
 - Modify: `app/covers/[id]/page.tsx:29` 與 `:39`
 - Test: `tests/components/cover-card.test.tsx`
@@ -101,6 +107,7 @@ git commit -m "feat(covers): add formatSongTitle helper (display-only 〈〉)"
 - [ ] **Step 1: 寫失敗測試**
 
 `tests/components/cover-card.test.tsx`:
+
 ```tsx
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
@@ -137,25 +144,35 @@ Expected: FAIL（找不到 name 為 `〈台北某個地方〉` 的連結，目�
 - [ ] **Step 3: 實作 — `components/cover-card.tsx`**
 
 在檔案頂部 import：
+
 ```tsx
 import { formatSongTitle } from '@/lib/covers/format'
 ```
+
 把連結文字 `{cover.title}` 改為：
+
 ```tsx
-{formatSongTitle(cover.title)}
+{
+  formatSongTitle(cover.title)
+}
 ```
 
 - [ ] **Step 4: 實作 — `app/covers/[id]/page.tsx`**
 
 在檔案頂部 import：
+
 ```tsx
 import { formatSongTitle } from '@/lib/covers/format'
 ```
+
 第 29 行的 `<h1>` 改為：
+
 ```tsx
 <h1 className="text-2xl font-bold">{formatSongTitle(cover.title)}</h1>
 ```
+
 第 39 行的 iframe `title` 改為：
+
 ```tsx
 title={`${formatSongTitle(cover.title)} 翻唱`}
 ```
@@ -177,6 +194,7 @@ git commit -m "feat(covers): wrap song titles in 〈〉 on card and detail page"
 ## Task 3: 抽出共用 `FilterPill` 並重構原唱篩選
 
 **Files:**
+
 - Create: `components/filter-pill.tsx`
 - Modify: `components/artist-filter-pills.tsx`
 - Test: `tests/components/filter-pill.test.tsx`
@@ -184,6 +202,7 @@ git commit -m "feat(covers): wrap song titles in 〈〉 on card and detail page"
 - [ ] **Step 1: 寫失敗測試**
 
 `tests/components/filter-pill.test.tsx`:
+
 ```tsx
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -250,6 +269,7 @@ Expected: PASS
 - [ ] **Step 5: 重構 `components/artist-filter-pills.tsx`**
 
 刪除檔案內自有的 `Pill` 函式，改 import 並使用共用元件。完整檔案改為：
+
 ```tsx
 'use client'
 
@@ -304,6 +324,7 @@ git commit -m "refactor(covers): extract shared FilterPill from artist filter"
 ## Task 4: `SortPills` 元件
 
 **Files:**
+
 - Create: `components/sort-pills.tsx`
 - Test: `tests/components/sort-pills.test.tsx`
 
@@ -312,6 +333,7 @@ git commit -m "refactor(covers): extract shared FilterPill from artist filter"
 - [ ] **Step 1: 寫失敗測試**
 
 `tests/components/sort-pills.test.tsx`:
+
 ```tsx
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -405,6 +427,7 @@ git commit -m "feat(covers): add SortPills (newest/oldest) control"
 ## Task 5: 骨架元件與路由層 loading
 
 **Files:**
+
 - Create: `components/cover-card-skeleton.tsx`
 - Create: `app/covers/loading.tsx`
 - Test: `tests/components/cover-card-skeleton.test.tsx`
@@ -412,6 +435,7 @@ git commit -m "feat(covers): add SortPills (newest/oldest) control"
 - [ ] **Step 1: 寫失敗測試**
 
 `tests/components/cover-card-skeleton.test.tsx`:
+
 ```tsx
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
@@ -501,6 +525,7 @@ git commit -m "feat(covers): add skeleton card/grid and route-level loading"
 ## Task 6: 抽出 `CoverResults` 並在 page 加 Suspense + 排序 pill
 
 **Files:**
+
 - Create: `components/cover-results.tsx`
 - Modify: `app/covers/page.tsx`
 
@@ -548,6 +573,7 @@ export async function CoverResults({ query }: { query: CoverQuery }) {
 - [ ] **Step 2: 改寫 `app/covers/page.tsx`**
 
 完整檔案改為：
+
 ```tsx
 import Link from 'next/link'
 import { Suspense } from 'react'
@@ -619,6 +645,7 @@ Expected: 編譯成功、TypeScript 無錯誤、`/covers` 仍列為動態路由
 - [ ] **Step 4: 手動驗證（本機）**
 
 確保本機 Supabase 在跑且已 `pnpm db:reset`，啟動 `pnpm dev`，在瀏覽器確認（注意 dev server 可能用 3000 以外的埠）：
+
 1. 進入 `/covers` 首次載入時看到骨架卡片，隨後換成真實清單。
 2. 歌名顯示為 `〈…〉`。
 3. 點「最舊」→ 清單順序反轉、網址出現 `?sort=oldest`、切換瞬間出現骨架。
@@ -637,11 +664,13 @@ git commit -m "feat(covers): suspense skeleton on filter/sort/search + sort pill
 ## Task 7: E2E 排序測試 + 受 〈〉 影響的斷言修正 + 最終驗證
 
 **Files:**
+
 - Modify: `e2e/covers.spec.ts`
 
 - [ ] **Step 1: 更新詳情頁連結斷言以反映 〈〉**
 
 在 `e2e/covers.spec.ts` 的 `點卡片標題進詳情頁` 測試，把第一個 selector 改為帶單書名號（h1 用 `hasText` 子字串比對，維持不變即可）：
+
 ```ts
 test('點卡片標題進詳情頁', async ({ page }) => {
   await page.goto('/covers')
@@ -654,6 +683,7 @@ test('點卡片標題進詳情頁', async ({ page }) => {
 - [ ] **Step 2: 新增排序 E2E 測試**
 
 在 `e2e/covers.spec.ts` 檔尾新增（沿用檔案既有的 `test` / `expect` import 與 `beforeEach` 的 seed）：
+
 ```ts
 test('排序：最新 / 最舊 切換改變第一張卡片', async ({ page }) => {
   await page.goto('/covers')
@@ -682,12 +712,14 @@ Expected: 全部通過（含既有測試與新增的排序測試）
 - [ ] **Step 4: 最終全量驗證**
 
 Run（逐一）：
+
 ```bash
 pnpm test
 pnpm lint
 pnpm format:check
 pnpm build
 ```
+
 Expected: 全部通過、無錯誤
 
 - [ ] **Step 5: Commit**

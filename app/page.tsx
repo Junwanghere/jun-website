@@ -23,9 +23,7 @@ export default function Home() {
               priority
             />
           </div>
-          <h1 className="mt-3 text-xl font-bold">
-            Jun Wang
-          </h1>
+          <h1 className="mt-3 text-xl font-bold">Jun Wang</h1>
           <p className="text-muted-foreground mt-0.5 text-sm">我是王嘉駿</p>
           <p className="text-muted-foreground/80 mt-2 text-sm">唱歌的人。</p>
 

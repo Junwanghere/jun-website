@@ -39,6 +39,7 @@ Expected: 印出 `API URL: http://127.0.0.1:54321`、`anon key` / `publishable k
 - [ ] **Step 2: 記下本機三個值**
 
 從上一步輸出記下:
+
 - `NEXT_PUBLIC_SUPABASE_URL`(應為 `http://127.0.0.1:54321`)
 - anon/publishable key(對應 `NEXT_PUBLIC_SUPABASE_ANON_KEY`)
 - service_role/secret key(對應 `SUPABASE_SERVICE_ROLE_KEY`)
@@ -48,6 +49,7 @@ Expected: 印出 `API URL: http://127.0.0.1:54321`、`anon key` / `publishable k
 把 Step 2 的 anon key 與 service key,跟「另一個全新 Supabase CLI 專案」的預設值比較。最快做法:
 Run: `supabase status -o env 2>/dev/null | grep -E 'ANON_KEY|SERVICE_ROLE_KEY|PUBLISHABLE|SECRET'`
 判斷:CLI 2.x 的本機 key 預期是固定的(每台機器一致,來自固定的本機 demo 設定)。
+
 - 若確認固定 → Task 5 直接把 keys 寫進 `.env.local.example`。
 - 若不確定/可能每台不同 → Task 5 對這兩個 key 維持 placeholder,README 指示從 `supabase status` 複製。
 
@@ -56,10 +58,12 @@ Run: `supabase status -o env 2>/dev/null | grep -E 'ANON_KEY|SERVICE_ROLE_KEY|PU
 - [ ] **Step 4: 確認 GoTrue admin endpoint 可用**
 
 Run(把 `<SERVICE_ROLE>` 換成 Step 2 的 service key):
+
 ```bash
 curl -s -X GET 'http://127.0.0.1:54321/auth/v1/admin/users' \
   -H "apikey: <SERVICE_ROLE>" -H "Authorization: Bearer <SERVICE_ROLE>" | head -c 300
 ```
+
 Expected: 回傳 JSON,形如 `{"users":[...],"aud":...}`(可能 `users` 為空陣列)。這證實 `GET /auth/v1/admin/users` 可列出使用者、供 Task 2 做冪等判斷。
 
 無對應 commit(純查證)。
@@ -69,20 +73,24 @@ Expected: 回傳 JSON,形如 `{"users":[...],"aud":...}`(可能 `users` 為空�
 ## Task 2: 新增 `scripts/seed-admin.mjs`(冪等建立 admin)
 
 **Files:**
+
 - Create: `scripts/seed-admin.mjs`
 
 - [ ] **Step 1: 手動冒煙測試「建立」路徑(先確認 endpoint 行為)**
 
 先確保目前本機沒有該帳號(若 Studio 之前建過,先到 Studio 刪掉,或直接進行——腳本會冪等處理)。
 這一步只是為了在寫腳本前親眼確認 POST 行為:
+
 ```bash
 curl -s -X POST 'http://127.0.0.1:54321/auth/v1/admin/users' \
   -H "apikey: <SERVICE_ROLE>" -H "Authorization: Bearer <SERVICE_ROLE>" \
   -H "Content-Type: application/json" \
   -d '{"email":"smoke-test@example.com","password":"smoke-test-pw-123","email_confirm":true}' | head -c 300
 ```
+
 Expected: 回傳含 `"id"`、`"email":"smoke-test@example.com"`、`"email_confirmed_at"` 非 null 的 JSON。
 清掉測試帳號:
+
 ```bash
 # 從上一步回傳取得 id,替換 <ID>
 curl -s -X DELETE 'http://127.0.0.1:54321/auth/v1/admin/users/<ID>' \
@@ -199,10 +207,12 @@ Expected: 四個 key 都印出且有值(這份 `.env.local` 已存在於開發�
 - [ ] **Step 4: 加 package.json script 並執行(建立路徑)**
 
 先在 `package.json` 的 `scripts` 加一行(緊接 `seed:covers` 之後):
+
 ```json
     "seed:covers": "node scripts/seed-youtube-covers.mjs",
     "seed:admin": "node scripts/seed-admin.mjs"
 ```
+
 Run: `pnpm seed:admin`
 Expected: 印出 `Created admin: junwangwrk@gmail.com (id=...)`(若該帳號早已存在則印 `Admin already exists ... skipping.`)。
 
@@ -229,6 +239,7 @@ git commit -m "feat(scripts): idempotent admin user seeder for local dev"
 ## Task 3: 新增 `scripts/db-reset.mjs`(一鍵重建)
 
 **Files:**
+
 - Create: `scripts/db-reset.mjs`
 
 - [ ] **Step 1: 寫 `scripts/db-reset.mjs`**
@@ -269,6 +280,7 @@ console.log('\n✓ db:reset complete — schema + admin + covers all rebuilt.')
 - [ ] **Step 2: 加 package.json script**
 
 在 `package.json` 的 `scripts` 加(緊接 `seed:admin` 之後):
+
 ```json
     "seed:admin": "node scripts/seed-admin.mjs",
     "db:reset": "node scripts/db-reset.mjs"
@@ -300,6 +312,7 @@ git commit -m "feat(scripts): one-command db:reset (reset + seed admin + seed co
 `config.toml` 的 `[db.seed]` 指向 `./seed.sql` 但檔案不存在,`supabase db reset` 會略過/警告。建立一個註解用空檔。
 
 **Files:**
+
 - Create: `supabase/seed.sql`
 
 - [ ] **Step 1: 建立 `supabase/seed.sql`**
@@ -337,11 +350,13 @@ git commit -m "chore(supabase): add documented no-op seed.sql to satisfy config"
 讓新機器 `cp .env.local.example .env.local` 後盡量即可用。內容依 Task 1 Step 3 的結論決定 keys 是寫死還是 placeholder。
 
 **Files:**
+
 - Modify: `.env.local.example`
 
 - [ ] **Step 1: 依 Task 1 結論改寫 `.env.local.example`**
 
 **情況 A — Task 1 判定本機 keys 為固定值**(把 `<...>` 換成 Task 1 Step 2 記下的真實本機 key):
+
 ```bash
 # 本機 Supabase（supabase start 後的固定預設值；換機器後值相同，可直接沿用）
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
@@ -358,10 +373,12 @@ E2E_ADMIN_PASSWORD=local-dev-admin-pw
 ```
 
 **情況 B — Task 1 判定 keys 可能每台不同**:把上面兩個 key 行改回 placeholder:
+
 ```bash
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<從 `supabase status` 的 anon/publishable key 複製>
 SUPABASE_SERVICE_ROLE_KEY=<從 `supabase status` 的 service_role/secret key 複製>
 ```
+
 其餘(URL、allowlist、admin email/password)同情況 A。
 
 - [ ] **Step 2: 同步開發機的 `.env.local` 密碼與 example 一致**
@@ -375,6 +392,7 @@ Expected: `✓ db:reset complete`。
 ```bash
 cp .env.local.example /tmp/env-check && diff <(sed -E 's/=.*//' .env.local | sort) <(sed -E 's/=.*//' /tmp/env-check | sort)
 ```
+
 Expected: 兩邊的「變數名稱集合」一致(值可不同)。確認 example 沒漏掉任何 `.env.local` 用到的變數。
 
 - [ ] **Step 4: 確認 `.env.local` 仍未被追蹤**
@@ -394,11 +412,12 @@ git commit -m "chore(env): fill .env.local.example for one-step machine setup"
 ## Task 6: 改寫 README 的起動流程
 
 **Files:**
+
 - Modify: `README.md`(「第一次起動」段落 `:16-34`、「常用指令」表 `:45-54`)
 
 - [ ] **Step 1: 替換「第一次起動」整段**
 
-把 README 中從 `## 第一次起動` 到該段 ```` ```bash ... ``` ```` + Studio 建帳號說明 + `pnpm dev` 區塊(原 16–34 行),整段換成:
+把 README 中從 `## 第一次起動` 到該段 ` ```bash ... ``` ` + Studio 建帳號說明 + `pnpm dev` 區塊(原 16–34 行),整段換成:
 
 ````markdown
 ## 第一次起動
@@ -423,9 +442,10 @@ pnpm dev                            # http://localhost:3000
 - [ ] **Step 2: 更新「常用指令」表**
 
 在「常用指令」表(原 47–54 行)加入兩列(放在 `supabase db reset` 那列附近):
+
 ```markdown
-| `pnpm db:reset`                    | 重置 DB：套 migration + 建 admin + 灌 covers（一鍵還原一致狀態）     |
-| `pnpm seed:admin`                  | 冪等建立本機 admin 帳號                                              |
+| `pnpm db:reset` | 重置 DB：套 migration + 建 admin + 灌 covers（一鍵還原一致狀態） |
+| `pnpm seed:admin` | 冪等建立本機 admin 帳號 |
 ```
 
 - [ ] **Step 3: 驗證 README 內部一致**
@@ -455,6 +475,7 @@ supabase stop
 supabase start
 pnpm db:reset
 ```
+
 Expected: 三步全綠,`✓ db:reset complete`。
 
 - [ ] **Step 2: 跑全部測試**
@@ -468,6 +489,7 @@ Expected: Playwright 全綠,結束後自動 `pnpm seed:covers` 還原真資料(�
 - [ ] **Step 3: 手動確認前後台**
 
 `pnpm dev` →
+
 - `http://localhost:3000/covers` 看到 20 首。
 - `http://localhost:3000/login` 用 `.env.local` 帳密登入成功進 `/admin`。
 
@@ -490,10 +512,12 @@ Expected: 顯示已登入 GitHub 帳號。若未登入,提示使用者執行 `! 
 Run: `git status --short`
 Expected: 看到 `app/page.tsx`(M)與 `public/jun-profile.jpg`(??)等。
 提交:
+
 ```bash
 git add app/page.tsx public/jun-profile.jpg
 git commit -m "feat(home): use childhood photo as landing page avatar"
 ```
+
 (若 `git status` 另含本計畫各 task 已提交以外的其他改動,逐一確認後再提交。)
 
 - [ ] **Step 3: 最終 secrets 掃描(推之前最後防線)**
@@ -504,9 +528,11 @@ Expected: 第一段只應出現 `.env.local.example`;第二段不應出現任何
 - [ ] **Step 4: 建立 private repo 並推送**
 
 Run:
+
 ```bash
 gh repo create jun-website --private --source=. --remote=origin --push
 ```
+
 Expected: 建立 `<user>/jun-website`(private),設定 `origin`,並推送當前分支。
 
 - [ ] **Step 5: 推送 main 與目前分支,確認 remote**
@@ -517,6 +543,7 @@ git push -u origin HEAD
 git remote -v
 gh repo view --json visibility,nameWithOwner
 ```
+
 Expected: `origin` 指向 GitHub;`visibility` 為 `PRIVATE`;分支已在遠端。
 
 - [ ] **Step 6: 終極驗證 — 真的能從零 clone 起動(可選但建議)**
@@ -527,6 +554,7 @@ pnpm install
 cp .env.local.example .env.local   # 視情況補 keys
 supabase start && pnpm db:reset && pnpm dev
 ```
+
 Expected: 照 README 流程能跑起來、`/covers` 有資料、可登入。驗證後刪除 `/tmp/jun-website-verify`。
 
 無額外 commit(repo 已建立並推送)。
@@ -536,6 +564,7 @@ Expected: 照 README 流程能跑起來、`/covers` 有資料、可登入。驗�
 ## Self-Review
 
 **Spec coverage:**
+
 - A1 上 GitHub → Task 8(+ Task 8 Step 2 提交未提交改動、Step 3 secrets 掃描)。✓
 - A2.1 `seed:admin` → Task 2。✓
 - A2.2 `db:reset` → Task 3。✓
