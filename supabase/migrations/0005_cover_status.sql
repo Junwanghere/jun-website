@@ -6,7 +6,8 @@ alter table public.covers
 create index covers_status_idx on public.covers (status);
 
 -- 熱門原唱統計只算已發布（草稿不灌統計）。
--- view 在 Supabase 預設 security definer（繞 RLS），故必須在這裡顯式過濾。
+-- covers 的 RLS 對所有人開放讀（covers_select_all = true），不分 draft/published，
+-- 故統計必須在 view 內顯式過濾。
 create or replace view public.cover_artist_counts as
 select
   original_artist,
