@@ -8,7 +8,10 @@ export type CoverListResult = {
   hasMore: boolean
 }
 
-export async function listCovers(query: CoverQuery): Promise<CoverListResult> {
+export async function listCovers(
+  query: CoverQuery,
+  opts: { includeDrafts?: boolean } = {},
+): Promise<CoverListResult> {
   const supabase = await createClient()
 
   let q = supabase
@@ -16,6 +19,8 @@ export async function listCovers(query: CoverQuery): Promise<CoverListResult> {
     .select('*, cover_links(*)', { count: 'exact' })
     .order('cover_date', { ascending: query.sort === 'oldest' })
     .range(query.offset, query.offset + query.limit - 1)
+
+  if (!opts.includeDrafts) q = q.eq('status', 'published')
 
   if (query.q) {
     const escaped = query.q.replace(/[%_]/g, '\\$&')
@@ -32,13 +37,14 @@ export async function listCovers(query: CoverQuery): Promise<CoverListResult> {
   return { items, total, hasMore: query.offset + items.length < total }
 }
 
-export async function getCoverById(id: string): Promise<CoverWithLinks | null> {
+export async function getCoverById(
+  id: string,
+  opts: { includeDrafts?: boolean } = {},
+): Promise<CoverWithLinks | null> {
   const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('covers')
-    .select('*, cover_links(*)')
-    .eq('id', id)
-    .maybeSingle()
+  let q = supabase.from('covers').select('*, cover_links(*)').eq('id', id)
+  if (!opts.includeDrafts) q = q.eq('status', 'published')
+  const { data, error } = await q.maybeSingle()
   if (error) throw error
   return data as CoverWithLinks | null
 }
