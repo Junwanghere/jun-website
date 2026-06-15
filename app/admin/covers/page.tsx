@@ -29,7 +29,7 @@ function CoverRow({ c }: { c: CoverWithLinks }) {
 }
 
 export default async function AdminCoversPage() {
-  const { items, total } = await listCovers(
+  const { items } = await listCovers(
     { sort: 'newest', limit: 200, offset: 0 },
     { includeDrafts: true },
   )
@@ -41,7 +41,7 @@ export default async function AdminCoversPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">翻唱管理</h1>
-          <p className="text-muted-foreground text-sm">共 {total} 首</p>
+          <p className="text-muted-foreground text-sm">共 {published.length} 首</p>
         </div>
         <div className="flex items-center gap-2">
           <SyncButton />
