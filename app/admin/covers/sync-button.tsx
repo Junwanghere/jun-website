@@ -10,15 +10,24 @@ export function SyncButton() {
 
   return (
     <div className="flex items-center gap-2">
-      {msg && <span className="text-muted-foreground text-xs">{msg}</span>}
+      {msg && (
+        <span role="status" className="text-muted-foreground text-xs">
+          {msg}
+        </span>
+      )}
       <Button
         type="button"
         variant="outline"
         disabled={pending}
         onClick={() =>
           startTransition(async () => {
-            const r = await syncDraftsNow()
-            setMsg(`新增 ${r.created}、略過 ${r.skipped}`)
+            setMsg(null)
+            try {
+              const r = await syncDraftsNow()
+              setMsg(`新增 ${r.created}、略過 ${r.skipped}`)
+            } catch {
+              setMsg('同步失敗，請稍後再試')
+            }
           })
         }
       >
