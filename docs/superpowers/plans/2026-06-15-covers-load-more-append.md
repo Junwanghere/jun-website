@@ -15,15 +15,18 @@
 ## File Structure
 
 新增：
+
 - `lib/covers/actions.ts` — Server Action `loadMoreCovers(query)` 回傳一批 `CoverWithLinks[]`
 - `components/cover-list.tsx` — client 元件，累加清單 + 載入更多按鈕（吸收原 LoadMoreButton）
 
 修改：
+
 - `lib/covers/search-params.ts` — `DEFAULT_LIMIT` 10、`offset` 固定 0、移除 `asOffset` 與無人使用的 `buildQueryString`
 - `tests/lib/search-params.test.ts` — 更新 limit 期望值與 offset 行為
 - `components/cover-results.tsx` — 改抓前 10 筆 + 渲染 `<CoverList>`
 
 刪除：
+
 - `components/load-more-button.tsx` — 由 `CoverList` 取代
 
 ---
@@ -31,6 +34,7 @@
 ## Task 1: search-params 改預設 10、offset 固定 0、移除死碼
 
 **Files:**
+
 - Modify: `lib/covers/search-params.ts`
 - Test: `tests/lib/search-params.test.ts`
 
@@ -108,6 +112,7 @@ export function parseSearchParams(
   }
 }
 ```
+
 （移除了 `asOffset` 與 `buildQueryString`——後者全專案無任何呼叫處，是死碼。）
 
 - [ ] **Step 4: 跑測試確認通過**
@@ -132,6 +137,7 @@ git commit -m "refactor(covers): default page size 10, drop dead cursor/offset p
 ## Task 2: Server Action `loadMoreCovers`
 
 **Files:**
+
 - Create: `lib/covers/actions.ts`
 
 （此檔為薄包裝，依賴 DB 的行為由 Task 3 的元件測試以 mock 驗證、最終以手動驗證；此處只建立並確認型別/編譯。）
@@ -168,6 +174,7 @@ git commit -m "feat(covers): add loadMoreCovers server action"
 ## Task 3: `CoverList` 客戶端累加元件
 
 **Files:**
+
 - Create: `components/cover-list.tsx`
 - Test: `tests/components/cover-list.test.tsx`
 
@@ -214,7 +221,9 @@ describe('CoverList', () => {
   beforeEach(() => h.loadMore.mockReset())
 
   it('items 少於 total 時顯示「載入更多」', () => {
-    render(<CoverList initialItems={[makeCover('1'), makeCover('2')]} total={4} baseQuery={baseQuery} />)
+    render(
+      <CoverList initialItems={[makeCover('1'), makeCover('2')]} total={4} baseQuery={baseQuery} />,
+    )
     expect(screen.getByRole('button', { name: '載入更多' })).toBeInTheDocument()
   })
 
@@ -225,7 +234,9 @@ describe('CoverList', () => {
 
   it('點「載入更多」用 offset=已顯示數 呼叫 action，append 後達 total 則按鈕消失', async () => {
     h.loadMore.mockResolvedValue([makeCover('3'), makeCover('4')])
-    render(<CoverList initialItems={[makeCover('1'), makeCover('2')]} total={4} baseQuery={baseQuery} />)
+    render(
+      <CoverList initialItems={[makeCover('1'), makeCover('2')]} total={4} baseQuery={baseQuery} />,
+    )
 
     await userEvent.click(screen.getByRole('button', { name: '載入更多' }))
 
@@ -328,6 +339,7 @@ git commit -m "feat(covers): CoverList client component with append-based load m
 ## Task 4: 接上 `CoverResults`、刪除 `LoadMoreButton`
 
 **Files:**
+
 - Modify: `components/cover-results.tsx`
 - Delete: `components/load-more-button.tsx`
 
@@ -358,6 +370,7 @@ export async function CoverResults({ query }: { query: CoverQuery }) {
 git rm components/load-more-button.tsx
 grep -rn "load-more-button\|LoadMoreButton" app components tests e2e
 ```
+
 Expected: grep 無任何輸出（已無引用）
 
 - [ ] **Step 3: 編譯 + 全量單元測試**
@@ -384,6 +397,7 @@ git commit -m "feat(covers): wire CoverList into results; remove LoadMoreButton"
 node scripts/seed-youtube-covers.mjs   # 確保本機有完整 120 首（e2e 可能洗成 3 筆）
 pnpm dev
 ```
+
 （dev server 可能用 3000 以外的埠，留意 log 輸出的實際埠號。）
 
 - [ ] **Step 2: 手動確認（瀏覽器）**
@@ -402,12 +416,14 @@ Expected: 全部通過（seed 為 3 筆 < 10，列表一次顯示完，既有測
 - [ ] **Step 4: 最終全量驗證**
 
 Run（逐一）：
+
 ```bash
 pnpm test
 pnpm lint
 pnpm format:check
 pnpm build
 ```
+
 Expected: 全部通過。若 `format:check` 報未格式化，跑 `pnpm format` 修正後一併 commit。
 
 - [ ] **Step 5: Commit（若有 format 變更）**
@@ -416,6 +432,7 @@ Expected: 全部通過。若 `format:check` 報未格式化，跑 `pnpm format` 
 git add -A
 git commit -m "chore(covers): formatting after load-more append"
 ```
+
 （若沒有任何變更則略過此步。）
 
 ---

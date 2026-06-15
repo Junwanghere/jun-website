@@ -38,6 +38,7 @@ app/covers/page.tsx (server；Suspense key = q|artist|sort)
 ### 新增
 
 **`lib/covers/actions.ts`**
+
 ```ts
 'use server'
 import { listCovers } from '@/lib/covers/queries'
@@ -48,9 +49,11 @@ export async function loadMoreCovers(query: CoverQuery): Promise<CoverWithLinks[
   return items
 }
 ```
+
 `listCovers` 既有的 `range(offset, offset+limit-1)` 視窗正好就是「抓某一批」，不需修改。
 
 **`components/cover-list.tsx`**（`'use client'`）
+
 - props：`initialItems: CoverWithLinks[]`、`total: number`、`baseQuery: CoverQuery`（offset 為 0、limit 為 10）。
 - `const [items, setItems] = useState(initialItems)`；`const [pending, startTransition] = useTransition()`。
 - `hasMore = items.length < total`。
@@ -68,6 +71,7 @@ export async function loadMoreCovers(query: CoverQuery): Promise<CoverWithLinks[
 ### 修改
 
 **`components/cover-results.tsx`**（server）
+
 ```tsx
 import { CoverList } from '@/components/cover-list'
 import { listCovers } from '@/lib/covers/queries'
@@ -85,9 +89,11 @@ export async function CoverResults({ query }: { query: CoverQuery }) {
   )
 }
 ```
+
 （清單、空狀態、載入更多都移入 `CoverList`。）
 
 **`lib/covers/search-params.ts`**
+
 - `DEFAULT_LIMIT` 20 → **10**。
 - `offset` 固定回傳 `0`（移除 `cursor`→offset 的讀取與 `asOffset` helper），避免手動 `?cursor=N` 造成初始批次錯位。`q / artist / tag / sort` 維持不變。
 - `buildQueryString` 不再需要 `cursor` 分支；若該函式僅被測試使用，於計畫階段確認後一併移除其 `cursor` 分支（保持與「offset 不再進 URL」一致）。

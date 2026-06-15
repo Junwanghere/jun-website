@@ -38,7 +38,9 @@ describe('CoverList', () => {
   beforeEach(() => h.loadMore.mockReset())
 
   it('items 少於 total 時顯示「載入更多」', () => {
-    render(<CoverList initialItems={[makeCover('1'), makeCover('2')]} total={4} baseQuery={baseQuery} />)
+    render(
+      <CoverList initialItems={[makeCover('1'), makeCover('2')]} total={4} baseQuery={baseQuery} />,
+    )
     expect(screen.getByRole('button', { name: '載入更多' })).toBeInTheDocument()
   })
 
@@ -49,7 +51,9 @@ describe('CoverList', () => {
 
   it('點「載入更多」用 offset=已顯示數 呼叫 action，append 後達 total 則按鈕消失', async () => {
     h.loadMore.mockResolvedValue([makeCover('3'), makeCover('4')])
-    render(<CoverList initialItems={[makeCover('1'), makeCover('2')]} total={4} baseQuery={baseQuery} />)
+    render(
+      <CoverList initialItems={[makeCover('1'), makeCover('2')]} total={4} baseQuery={baseQuery} />,
+    )
 
     await userEvent.click(screen.getByRole('button', { name: '載入更多' }))
 
