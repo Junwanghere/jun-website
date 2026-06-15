@@ -2,13 +2,13 @@ import { describe, it, expect } from 'vitest'
 import { parseSearchParams } from '@/lib/covers/search-params'
 
 describe('parseSearchParams', () => {
-  it('沒有參數時用預設值', () => {
+  it('沒有參數時用預設值（每頁 10 筆、offset 0）', () => {
     expect(parseSearchParams({})).toEqual({
       q: undefined,
       artist: undefined,
       tag: undefined,
       sort: 'newest',
-      limit: 20,
+      limit: 10,
       offset: 0,
     })
   })
@@ -32,12 +32,8 @@ describe('parseSearchParams', () => {
     expect(parseSearchParams({ artist: '' }).artist).toBeUndefined()
   })
 
-  it('cursor 轉成 offset', () => {
-    expect(parseSearchParams({ cursor: '40' }).offset).toBe(40)
-  })
-
-  it('忽略不合法 cursor', () => {
-    expect(parseSearchParams({ cursor: 'abc' }).offset).toBe(0)
-    expect(parseSearchParams({ cursor: '-5' }).offset).toBe(0)
+  it('offset 永遠為 0（分頁改由客戶端累加，cursor 不再進 URL）', () => {
+    expect(parseSearchParams({}).offset).toBe(0)
+    expect(parseSearchParams({ cursor: '40' }).offset).toBe(0)
   })
 })
