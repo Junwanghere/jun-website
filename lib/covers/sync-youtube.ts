@@ -36,7 +36,7 @@ export async function syncYouTubeDrafts(): Promise<SyncResult> {
       .insert({
         status: 'draft',
         title: song ?? entry.title, // 解析失敗放原始標題
-        original_artist: artist ?? '',
+        original_artist: artist ?? '', // 解析失敗留空字串，待人工補原唱
         cover_date: entry.published.slice(0, 10),
         thumbnail_url: youtubeThumbnail(entry.videoId),
       })
@@ -50,7 +50,11 @@ export async function syncYouTubeDrafts(): Promise<SyncResult> {
       platform_label: null,
       url: `https://www.youtube.com/watch?v=${entry.videoId}`,
     })
-    if (linkInsErr) throw linkInsErr
+    if (linkInsErr) {
+      // link 建不起來就刪掉剛建的孤兒 cover（否則下次同步會因缺 YT 連結而重建成重複草稿）
+      await supabase.from('covers').delete().eq('id', cover.id)
+      throw linkInsErr
+    }
     created += 1
   }
 
