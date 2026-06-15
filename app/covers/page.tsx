@@ -21,7 +21,7 @@ export default async function CoversPage({
   const params = await searchParams
   const query = parseSearchParams(params)
   const topArtists = await getTopOriginalArtists(3)
-  const suspenseKey = `${query.q ?? ''}|${query.artist ?? ''}|${query.sort}`
+  const suspenseKey = `${query.q ?? ''}|${query.artist ?? ''}|${query.tag ?? ''}|${query.sort}`
 
   return (
     <main className="min-h-dvh">
