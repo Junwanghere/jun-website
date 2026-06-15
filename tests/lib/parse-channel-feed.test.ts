@@ -35,4 +35,21 @@ describe('parseChannelFeed', () => {
   it('沒有 entry 時回空陣列', () => {
     expect(parseChannelFeed('<feed><title>空頻道</title></feed>')).toEqual([])
   })
+
+  it('解碼 title 內的命名與數值字元實體', () => {
+    const xml = `<feed>
+      <entry>
+        <yt:videoId>abc123</yt:videoId>
+        <title>Tom &amp; Jerry &#39;s 〈歌〉</title>
+        <published>2026-06-01T00:00:00+00:00</published>
+      </entry>
+    </feed>`
+    expect(parseChannelFeed(xml)).toEqual([
+      {
+        videoId: 'abc123',
+        title: "Tom & Jerry 's 〈歌〉",
+        published: '2026-06-01T00:00:00+00:00',
+      },
+    ])
+  })
 })
