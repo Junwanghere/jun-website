@@ -32,13 +32,26 @@ function loadEnvLocal() {
   return env
 }
 
-const env = loadEnvLocal()
-const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL
-const SERVICE_ROLE = env.SUPABASE_SERVICE_ROLE_KEY
+// 連線設定：process.env 優先（可指向雲端而不動到本機 .env.local），
+// 沒給才退回讀 .env.local。
+function loadEnvLocalSafe() {
+  try {
+    return loadEnvLocal()
+  } catch {
+    return {}
+  }
+}
+const fileEnv = loadEnvLocalSafe()
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || fileEnv.NEXT_PUBLIC_SUPABASE_URL
+const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY || fileEnv.SUPABASE_SERVICE_ROLE_KEY
 if (!SUPABASE_URL || !SERVICE_ROLE) {
-  console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env.local')
+  console.error(
+    'Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY ' +
+      '(set them as env vars to target the cloud, or put them in .env.local for local)',
+  )
   process.exit(1)
 }
+console.log(`Target: ${SUPABASE_URL}`)
 
 const HEADERS = {
   apikey: SERVICE_ROLE,
