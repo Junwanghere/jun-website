@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink } from 'lucide-react'
 import { getCoverById } from '@/lib/covers/queries'
 import { PLATFORM_LABEL, type Platform } from '@/lib/covers/types'
 import { extractYouTubeId } from '@/lib/youtube'
+import { formatSongTitle } from '@/lib/covers/format'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,7 +27,7 @@ export default async function CoverDetailPage({ params }: { params: Promise<{ id
         </Link>
 
         <article className="mt-4">
-          <h1 className="text-2xl font-bold">{cover.title}</h1>
+          <h1 className="text-2xl font-bold">{formatSongTitle(cover.title)}</h1>
           <p className="text-muted-foreground mt-1 text-sm">
             原唱 {cover.original_artist} · {cover.cover_date}
           </p>
@@ -36,7 +37,7 @@ export default async function CoverDetailPage({ params }: { params: Promise<{ id
               <iframe
                 className="size-full"
                 src={`https://www.youtube.com/embed/${youtubeId}`}
-                title={`${cover.title} 翻唱`}
+                title={`${formatSongTitle(cover.title)} 翻唱`}
                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />

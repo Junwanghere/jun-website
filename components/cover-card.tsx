@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { PlatformIcon } from '@/components/platform-icon'
 import { PLATFORM_LABEL, type CoverWithLinks } from '@/lib/covers/types'
+import { formatSongTitle } from '@/lib/covers/format'
 
 export function CoverCard({ cover }: { cover: CoverWithLinks }) {
   return (
@@ -20,7 +21,7 @@ export function CoverCard({ cover }: { cover: CoverWithLinks }) {
             href={`/covers/${cover.id}`}
             className="focus-visible:ring-ring rounded after:absolute after:inset-0 after:content-[''] focus-visible:ring-2 focus-visible:outline-none"
           >
-            {cover.title}
+            {formatSongTitle(cover.title)}
           </Link>
         </h3>
         <div className="text-muted-foreground truncate text-xs">
