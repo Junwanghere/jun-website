@@ -1,10 +1,12 @@
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { ArrowLeft } from 'lucide-react'
-import { CoverCard } from '@/components/cover-card'
 import { SearchInput } from '@/components/search-input'
+import { SortPills } from '@/components/sort-pills'
 import { ArtistFilterPills } from '@/components/artist-filter-pills'
-import { LoadMoreButton } from '@/components/load-more-button'
-import { listCovers, getTopOriginalArtists } from '@/lib/covers/queries'
+import { CoverResults } from '@/components/cover-results'
+import { CoverGridSkeleton } from '@/components/cover-card-skeleton'
+import { getTopOriginalArtists } from '@/lib/covers/queries'
 import { parseSearchParams } from '@/lib/covers/search-params'
 
 export const dynamic = 'force-dynamic'
@@ -18,14 +20,12 @@ export default async function CoversPage({
 }) {
   const params = await searchParams
   const query = parseSearchParams(params)
-  const [{ items, total, hasMore }, topArtists] = await Promise.all([
-    listCovers(query),
-    getTopOriginalArtists(3),
-  ])
+  const topArtists = await getTopOriginalArtists(3)
+  const suspenseKey = `${query.q ?? ''}|${query.artist ?? ''}|${query.sort}`
 
   return (
     <main className="min-h-dvh">
-      {/* 上方標題區——會隨頁面捲走 */}
+      {/* 上方標題區 */}
       <div className="mx-auto w-full max-w-6xl px-4 pt-6">
         <Link
           href="/"
@@ -33,46 +33,27 @@ export default async function CoversPage({
         >
           <ArrowLeft className="size-4" /> 回首頁
         </Link>
-
-        <div className="mt-4 flex items-baseline justify-between">
-          <h1 className="text-2xl font-bold">翻唱</h1>
-          <span className="text-primary text-sm font-bold">{total} 首</span>
-        </div>
+        <h1 className="mt-4 text-2xl font-bold">翻唱</h1>
       </div>
 
-      {/* sticky 控制列：搜尋 + filter。固定貼頂、整段 bg-background 蓋住下面卡片 */}
+      {/* sticky 控制列：搜尋 + 排序 + 原唱 filter */}
       <div className="border-border bg-background sticky top-0 z-20 mt-3 border-b py-3">
         <div className="mx-auto w-full max-w-6xl px-4">
           <div className="md:max-w-md">
             <SearchInput defaultValue={query.q} />
           </div>
-          <div className="mt-3">
+          <div className="mt-3 flex flex-col gap-2">
+            <SortPills active={query.sort} />
             <ArtistFilterPills topArtists={topArtists} active={query.artist} />
           </div>
         </div>
       </div>
 
-      {/* 結果區 */}
+      {/* 結果區：key 隨 q|artist|sort 改變 → 切換時顯示骨架；cursor 不入 key */}
       <div className="mx-auto w-full max-w-6xl px-4 pt-4 pb-6">
-        <ul className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-3">
-          {items.length === 0 ? (
-            <li className="bg-card text-muted-foreground rounded-2xl p-6 text-center text-sm md:col-span-2 lg:col-span-3">
-              還沒有符合條件的翻唱
-            </li>
-          ) : (
-            items.map((c) => (
-              <li key={c.id}>
-                <CoverCard cover={c} />
-              </li>
-            ))
-          )}
-        </ul>
-
-        {hasMore && (
-          <div className="mt-4 flex justify-center">
-            <LoadMoreButton currentOffset={query.offset} limit={query.limit} />
-          </div>
-        )}
+        <Suspense key={suspenseKey} fallback={<CoverGridSkeleton count={query.limit} />}>
+          <CoverResults query={query} />
+        </Suspense>
       </div>
     </main>
   )
