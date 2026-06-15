@@ -30,6 +30,7 @@ export type Cover = {
   title: string
   original_artist: string
   cover_date: string // ISO date
+  status: 'draft' | 'published'
   thumbnail_url: string | null
   description: string | null
   tags: string[]

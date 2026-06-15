@@ -8,6 +8,7 @@ const cover: CoverWithLinks = {
   title: '台北某個地方',
   original_artist: '陳綺貞',
   cover_date: '2026-05-25',
+  status: 'published',
   thumbnail_url: null,
   description: null,
   tags: [],

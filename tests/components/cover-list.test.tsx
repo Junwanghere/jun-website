@@ -16,6 +16,7 @@ function makeCover(id: string): CoverWithLinks {
     title: `歌-${id}`,
     original_artist: '原唱',
     cover_date: '2026-01-01',
+    status: 'published',
     thumbnail_url: null,
     description: null,
     tags: [],
