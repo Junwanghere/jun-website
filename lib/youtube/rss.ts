@@ -18,6 +18,7 @@ export type FeedEntry = {
   videoId: string
   title: string
   published: string
+  description: string
 }
 
 // 輕量解析（不加 XML 套件）：先切出每個 <entry>…</entry>，再各自抓欄位。
@@ -29,8 +30,14 @@ export function parseChannelFeed(xml: string): FeedEntry[] {
     const videoId = block.match(/<yt:videoId>(.*?)<\/yt:videoId>/)?.[1]
     const title = block.match(/<title>([\s\S]*?)<\/title>/)?.[1]
     const published = block.match(/<published>(.*?)<\/published>/)?.[1]
+    const description = block.match(/<media:description>([\s\S]*?)<\/media:description>/)?.[1]
     if (videoId && title && published) {
-      entries.push({ videoId, title: decodeXml(title.trim()), published })
+      entries.push({
+        videoId,
+        title: decodeXml(title.trim()),
+        published,
+        description: description ? decodeXml(description) : '',
+      })
     }
   }
   return entries
@@ -74,4 +81,41 @@ export async function isShort(videoId: string): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+// 從影片描述抽出歌詞段落：去掉開頭的標題行與結尾的 hashtag 行，中間即歌詞。
+export function extractLyrics(description: string, videoTitle: string): string {
+  const lines = description.replace(/\r/g, '').split('\n')
+  // 1. 尾端：砍掉空行與「整行都是 hashtag」的行
+  while (
+    lines.length &&
+    (lines[lines.length - 1].trim() === '' || isHashtagLine(lines[lines.length - 1]))
+  ) {
+    lines.pop()
+  }
+  // 2. 開頭：只在確實是標題時砍掉
+  if (lines.length && looksLikeTitle(lines[0], videoTitle)) lines.shift()
+  // 3. 砍掉開頭殘留的空行
+  while (lines.length && lines[0].trim() === '') lines.shift()
+  return lines.join('\n').trim()
+}
+
+// 整行都是 #hashtag（混了其他文字的行不算，例如「副歌 #翻唱」）
+function isHashtagLine(line: string): boolean {
+  const toks = line.trim().split(/\s+/)
+  return toks[0] !== '' && toks.every((t) => t.startsWith('#'))
+}
+
+// 第 0 行含〈〉，或正規化後是影片標題的前綴 → 視為標題行
+function looksLikeTitle(line: string, videoTitle: string): boolean {
+  if (line.includes('〈') && line.includes('〉')) return true
+  const n0 = normalizeTitle(line)
+  return n0.length > 0 && normalizeTitle(videoTitle).startsWith(n0)
+}
+
+function normalizeTitle(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[〈〉()（）\s\-－]/g, '')
+    .replace(/coverbyjun/g, '')
 }

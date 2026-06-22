@@ -1,7 +1,13 @@
 import 'server-only'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { extractYouTubeId, youtubeThumbnail } from '@/lib/youtube'
-import { fetchChannelFeed, isShort, parseCoverTitle, selectNewEntries } from '@/lib/youtube/rss'
+import {
+  extractLyrics,
+  fetchChannelFeed,
+  isShort,
+  parseCoverTitle,
+  selectNewEntries,
+} from '@/lib/youtube/rss'
 
 export type SyncResult = { created: number; skipped: number }
 
@@ -45,6 +51,7 @@ export async function syncYouTubeDrafts(): Promise<SyncResult> {
         original_artist: artist ?? '', // 解析失敗留空字串，待人工補原唱
         cover_date: entry.published.slice(0, 10),
         thumbnail_url: youtubeThumbnail(entry.videoId),
+        description: extractLyrics(entry.description, entry.title) || null, // 帶入歌詞，無則留 null
       })
       .select('id')
       .single()

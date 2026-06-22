@@ -17,19 +17,35 @@ const SAMPLE = `<?xml version="1.0" encoding="UTF-8"?>
 </feed>`
 
 describe('parseChannelFeed', () => {
-  it('取出每個 entry 的 videoId / title / published', () => {
+  it('取出每個 entry 的 videoId / title / published（無描述時 description 為空字串）', () => {
     expect(parseChannelFeed(SAMPLE)).toEqual([
       {
         videoId: 'mDnelt8J_rc',
         title: '〈不想和你分開〉- 椅子樂團 （Cover by Jun)',
         published: '2026-06-13T10:00:00+00:00',
+        description: '',
       },
       {
         videoId: 'zuKanT80y7M',
         title: '〈梅雨季〉- 張震嶽 (Cover by Jun)',
         published: '2026-06-08T09:30:00+00:00',
+        description: '',
       },
     ])
+  })
+
+  it('取出 media:description 並解碼換行', () => {
+    const xml = `<feed>
+      <entry>
+        <yt:videoId>abc123</yt:videoId>
+        <title>〈歌〉- 人</title>
+        <published>2026-06-01T00:00:00+00:00</published>
+        <media:group>
+          <media:description>〈歌〉- 人&#10;歌詞一&#10;#歌 #翻唱</media:description>
+        </media:group>
+      </entry>
+    </feed>`
+    expect(parseChannelFeed(xml)[0].description).toBe('〈歌〉- 人\n歌詞一\n#歌 #翻唱')
   })
 
   it('沒有 entry 時回空陣列', () => {
@@ -49,6 +65,7 @@ describe('parseChannelFeed', () => {
         videoId: 'abc123',
         title: "Tom & Jerry 's 〈歌〉",
         published: '2026-06-01T00:00:00+00:00',
+        description: '',
       },
     ])
   })
