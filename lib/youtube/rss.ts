@@ -59,3 +59,19 @@ export async function fetchChannelFeed(channelId: string): Promise<FeedEntry[]> 
 export function selectNewEntries(entries: FeedEntry[], existingIds: Set<string>): FeedEntry[] {
   return entries.filter((e) => !existingIds.has(e.videoId))
 }
+
+// 判斷是不是 Shorts。RSS 不標記 Shorts，但 youtube.com/shorts/{id} 對「真正的 Short」
+// 回 200，對一般影片則 303 轉址到 /watch。用 redirect:manual 攔下轉址、只看狀態碼。
+// 檢查失敗一律回 false（當一般影片）——寧可多建一筆草稿讓人刪，也不要漏掉真正的翻唱。
+export async function isShort(videoId: string): Promise<boolean> {
+  try {
+    const res = await fetch(`https://www.youtube.com/shorts/${videoId}`, {
+      method: 'HEAD',
+      redirect: 'manual',
+      cache: 'no-store',
+    })
+    return res.status === 200
+  } catch {
+    return false
+  }
+}

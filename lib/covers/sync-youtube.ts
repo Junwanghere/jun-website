@@ -1,7 +1,7 @@
 import 'server-only'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { extractYouTubeId, youtubeThumbnail } from '@/lib/youtube'
-import { fetchChannelFeed, parseCoverTitle, selectNewEntries } from '@/lib/youtube/rss'
+import { fetchChannelFeed, isShort, parseCoverTitle, selectNewEntries } from '@/lib/youtube/rss'
 
 export type SyncResult = { created: number; skipped: number }
 
@@ -27,9 +27,15 @@ export async function syncYouTubeDrafts(): Promise<SyncResult> {
   const feed = await fetchChannelFeed(channelId)
   const fresh = selectNewEntries(feed, existing)
 
-  // 3. 逐筆建草稿
-  let created = 0
+  // 3. 排除 Shorts（RSS 不標記，逐筆問 youtube.com/shorts/{id}）。只檢查新片，請求量極小。
+  const drafts: typeof fresh = []
   for (const entry of fresh) {
+    if (!(await isShort(entry.videoId))) drafts.push(entry)
+  }
+
+  // 4. 逐筆建草稿
+  let created = 0
+  for (const entry of drafts) {
     const { song, artist } = parseCoverTitle(entry.title)
     const { data: cover, error: coverErr } = await supabase
       .from('covers')
@@ -58,5 +64,6 @@ export async function syncYouTubeDrafts(): Promise<SyncResult> {
     created += 1
   }
 
-  return { created, skipped: feed.length - fresh.length }
+  // 略過 = 已收錄的 + 被判定為 Shorts 的（兩者都不會新建草稿）
+  return { created, skipped: feed.length - drafts.length }
 }
