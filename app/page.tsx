@@ -45,7 +45,7 @@ export default function Home() {
             href="/covers"
             label="COVERS"
             title="翻唱清單"
-            description="點來聽我唱過的歌"
+            description="唱過的歌"
             featured
           />
           {/* <PortalCard
@@ -55,7 +55,7 @@ export default function Home() {
             description="技術筆記與生活雜記"
           />
           <PortalCard href="/work" label="WORK" title="作品集" description="音樂與網頁專案" /> */}
-          <PortalCard href="/about" label="ABOUT" title="關於我" description="我是誰、在做什麼" />
+          <PortalCard href="/about" label="ABOUT" title="關於我" description="我是誰" />
         </section>
 
         <footer className="text-muted-foreground/70 mt-8 text-center text-xs">© 2026 王嘉駿</footer>
