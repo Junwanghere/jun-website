@@ -5,6 +5,7 @@ import { getCoverById } from '@/lib/covers/queries'
 import { PLATFORM_LABEL, type Platform } from '@/lib/covers/types'
 import { extractYouTubeId } from '@/lib/youtube'
 import { formatSongTitle } from '@/lib/covers/format'
+import { LyricsCitation } from '@/components/lyrics-citation'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,9 +46,12 @@ export default async function CoverDetailPage({ params }: { params: Promise<{ id
           )}
 
           {cover.description && (
-            <p className="text-card-foreground mt-4 text-sm leading-relaxed whitespace-pre-line">
-              {cover.description}
-            </p>
+            <div className="mt-4">
+              <LyricsCitation
+                lyrics={cover.description}
+                attribution={`${formatSongTitle(cover.title)} - ${cover.original_artist}`}
+              />
+            </div>
           )}
 
           <div className="mt-6 space-y-2">

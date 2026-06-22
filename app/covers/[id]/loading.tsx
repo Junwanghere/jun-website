@@ -26,10 +26,14 @@ export default function Loading() {
           {/* YouTube 影片 (aspect-video, mt-4, rounded-2xl) */}
           <Skeleton className="mt-4 aspect-video w-full rounded-2xl" />
 
-          {/* 描述 (mt-4, 多行) */}
-          <div className="mt-4 space-y-2">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-4/5" />
+          {/* 描述：歌詞 citation 卡片骨架（對齊 LyricsCitation 結構） */}
+          <div className="bg-card mt-4 rounded-[20px] px-8 pt-7 pb-[22px] shadow-sm">
+            <div className="mx-auto max-w-[30ch] space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-11/12" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+            <Skeleton className="mx-auto mt-5 h-3 w-32" />
           </div>
 
           {/* 前往平台 (mt-6) */}
