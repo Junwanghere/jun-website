@@ -26,6 +26,14 @@ export default function Loading() {
           {/* YouTube 影片 (aspect-video, mt-4, rounded-2xl) */}
           <Skeleton className="mt-4 aspect-video w-full rounded-2xl" />
 
+          {/* 平台 logo 橫排（mt-4，靠左，對齊 page.tsx 的 size-26 icon 列） */}
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <span className="text-muted-foreground shrink-0 text-sm">觀看平台：</span>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="size-[26px] rounded-md" />
+            ))}
+          </div>
+
           {/* 描述：歌詞 citation 卡片骨架（對齊 LyricsCitation 結構） */}
           <div className="bg-card mt-4 rounded-[20px] px-8 pt-7 pb-[22px] shadow-sm">
             <div className="mx-auto max-w-[30ch] space-y-2">
@@ -34,23 +42,6 @@ export default function Loading() {
               <Skeleton className="h-4 w-3/4" />
             </div>
             <Skeleton className="mx-auto mt-5 h-3 w-32" />
-          </div>
-
-          {/* 前往平台 (mt-6) */}
-          <div className="mt-6 space-y-2">
-            {/* 區塊標題（靜態，與 page.tsx 相同） */}
-            <h2 className="text-primary text-xs font-bold tracking-widest uppercase">前往平台</h2>
-            <ul className="flex flex-col gap-2">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <li key={i}>
-                  {/* 對齊 page.tsx 的連結列：bg-card rounded-xl px-4 py-3 shadow-sm */}
-                  <div className="bg-card flex items-center justify-between rounded-xl px-4 py-3 shadow-sm">
-                    <Skeleton className="h-4 w-20" />
-                    <Skeleton className="size-4" />
-                  </div>
-                </li>
-              ))}
-            </ul>
           </div>
         </article>
       </div>

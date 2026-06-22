@@ -1,11 +1,12 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ExternalLink } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { getCoverById } from '@/lib/covers/queries'
 import { PLATFORM_LABEL, type Platform } from '@/lib/covers/types'
 import { extractYouTubeId } from '@/lib/youtube'
 import { formatSongTitle } from '@/lib/covers/format'
 import { LyricsCitation } from '@/components/lyrics-citation'
+import { PlatformIcon } from '@/components/platform-icon'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,6 +46,28 @@ export default async function CoverDetailPage({ params }: { params: Promise<{ id
             </div>
           )}
 
+          {cover.cover_links.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <span className="text-muted-foreground shrink-0 text-sm">觀看平台：</span>
+              {cover.cover_links.map((l) => (
+                <a
+                  key={l.id}
+                  href={l.url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={`在 ${
+                    l.platform === 'other' && l.platform_label
+                      ? l.platform_label
+                      : PLATFORM_LABEL[l.platform as Platform]
+                  } 觀看`}
+                  className="focus-visible:ring-ring inline-flex items-center rounded transition hover:opacity-70 focus-visible:ring-2 focus-visible:outline-none"
+                >
+                  <PlatformIcon platform={l.platform} label={l.platform_label} size={26} />
+                </a>
+              ))}
+            </div>
+          )}
+
           {cover.description && (
             <div className="mt-4">
               <LyricsCitation
@@ -53,31 +76,6 @@ export default async function CoverDetailPage({ params }: { params: Promise<{ id
               />
             </div>
           )}
-
-          <div className="mt-6 space-y-2">
-            <h2 className="text-primary text-xs font-bold tracking-widest uppercase">前往平台</h2>
-            <ul className="flex flex-col gap-2">
-              {cover.cover_links.map((l) => {
-                const label =
-                  l.platform === 'other' && l.platform_label
-                    ? l.platform_label
-                    : PLATFORM_LABEL[l.platform as Platform]
-                return (
-                  <li key={l.id}>
-                    <Link
-                      href={l.url}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className="bg-card flex items-center justify-between rounded-xl px-4 py-3 shadow-sm hover:shadow"
-                    >
-                      <span className="text-sm font-semibold">{label}</span>
-                      <ExternalLink className="text-muted-foreground size-4" />
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
         </article>
       </div>
     </main>
