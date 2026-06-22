@@ -25,7 +25,7 @@ export function CoverCard({ cover }: { cover: CoverWithLinks }) {
           </Link>
         </h3>
         <div className="text-muted-foreground truncate text-xs">
-          原唱 {cover.original_artist} · {cover.cover_date}
+          {cover.original_artist} · {cover.cover_date}
         </div>
         <div className="relative z-10 mt-1.5 flex flex-wrap items-center gap-1.5">
           {cover.cover_links.map((l) => {
