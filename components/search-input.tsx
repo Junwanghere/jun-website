@@ -21,14 +21,22 @@ export function SearchInput({ defaultValue }: { defaultValue?: string }) {
 
   return (
     <form onSubmit={onSubmit} className="relative">
-      <Search className="text-muted-foreground absolute top-1/2 left-4 size-4 -translate-y-1/2" />
       <input
+        type="search"
+        enterKeyHint="search"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="搜尋歌名或原唱⋯"
-        className="bg-card placeholder:text-muted-foreground/70 focus:ring-ring w-full rounded-full py-2.5 pr-4 pl-10 text-sm shadow-sm ring-0 outline-none focus:ring-2"
+        className="bg-card placeholder:text-muted-foreground/70 focus:ring-ring h-11 w-full rounded-full pr-12 pl-5 text-sm shadow-sm ring-0 outline-none focus:ring-2 [&::-webkit-search-cancel-button]:appearance-none"
         aria-label="搜尋"
       />
+      <button
+        type="submit"
+        aria-label="搜尋"
+        className="text-muted-foreground hover:text-foreground absolute top-1/2 right-1.5 flex size-8 -translate-y-1/2 items-center justify-center rounded-full transition-colors"
+      >
+        <Search className="size-4" />
+      </button>
     </form>
   )
 }
