@@ -10,7 +10,7 @@ export type CoverListResult = {
 
 export async function listCovers(
   query: CoverQuery,
-  opts: { includeDrafts?: boolean } = {},
+  opts: { includeDrafts?: boolean; status?: 'draft' | 'published' } = {},
 ): Promise<CoverListResult> {
   const supabase = await createClient()
 
@@ -20,7 +20,9 @@ export async function listCovers(
     .order('cover_date', { ascending: query.sort === 'oldest' })
     .range(query.offset, query.offset + query.limit - 1)
 
-  if (!opts.includeDrafts) q = q.eq('status', 'published')
+  // 狀態過濾：明確指定 status 優先；否則 fail-closed（公開端預設只給 published）
+  if (opts.status) q = q.eq('status', opts.status)
+  else if (!opts.includeDrafts) q = q.eq('status', 'published')
 
   if (query.q) {
     const escaped = query.q.replace(/[%_]/g, '\\$&')
