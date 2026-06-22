@@ -29,7 +29,7 @@ export default async function CoverDetailPage({ params }: { params: Promise<{ id
         <article className="mt-4">
           <h1 className="text-2xl font-bold">{formatSongTitle(cover.title)}</h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            原唱 {cover.original_artist} · {cover.cover_date}
+            {cover.original_artist} · {cover.cover_date}
           </p>
 
           {youtubeId && (
