@@ -3,6 +3,7 @@ import { SiInstagram, SiThreads, SiYoutube } from 'react-icons/si'
 import { PortalCard } from '@/components/portal-card'
 import { SocialButton } from '@/components/social-button'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { TypedText } from '@/components/typed-text'
 
 export default function Home() {
   return (
@@ -25,7 +26,9 @@ export default function Home() {
           </div>
           <h1 className="mt-3 text-xl font-bold">Jun Wang</h1>
           <p className="text-muted-foreground mt-0.5 text-sm">我是王嘉駿</p>
-          <p className="text-muted-foreground/80 mt-2 text-sm">唱歌的人。</p>
+          <p className="text-muted-foreground/80 mt-2 text-sm">
+            <TypedText text="唱歌的人。" />
+          </p>
 
           <div className="mt-4 flex justify-center gap-2.5">
             <SocialButton href="https://instagram.com/juniswang" label="Instagram">

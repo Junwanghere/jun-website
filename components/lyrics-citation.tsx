@@ -1,61 +1,43 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
+import Typed from 'typed.js'
 
-const MAX_TILT = 9 // 最大傾斜角度（度）
+// ▼▼▼ 可自由手調的 typed.js 參數（改完存檔即可看效果） ▼▼▼
+const TYPED_OPTIONS = {
+  typeSpeed: 35, // 每字間隔(ms)，越小越快
+  startDelay: 250, // 開始前延遲(ms)
+  showCursor: true, // 顯示游標
+  cursorChar: '|', // 游標字元
+  loop: false, // 是否循環播放
+  smartBackspace: false,
+} as const
+// ▲▲▲ 可自由手調的 typed.js 參數 ▲▲▲
 
-// 歌詞 citation 卡片：引文置中靠左、出處置中，加上滑鼠 3D tilt + 光澤。
-// tilt 只在滑鼠裝置上啟用，並尊重 prefers-reduced-motion。
+// 歌詞 citation 卡片：引文以 typed.js 打字呈現，出處靜態置中。
 export function LyricsCitation({ lyrics, attribution }: { lyrics: string; attribution: string }) {
-  const ref = useRef<HTMLDivElement>(null)
+  const el = useRef<HTMLSpanElement>(null)
 
-  function onMove(e: React.PointerEvent<HTMLDivElement>) {
-    const el = ref.current
-    if (!el || e.pointerType !== 'mouse') return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const r = el.getBoundingClientRect()
-    const x = (e.clientX - r.left) / r.width
-    const y = (e.clientY - r.top) / r.height
-    const ry = (x - 0.5) * 2 * MAX_TILT
-    const rx = -(y - 0.5) * 2 * MAX_TILT
-    el.style.transition = 'transform .05s linear, box-shadow .25s ease'
-    el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`
-    el.style.setProperty('--mx', `${x * 100}%`)
-    el.style.setProperty('--my', `${y * 100}%`)
-  }
-
-  function onLeave() {
-    const el = ref.current
-    if (!el) return
-    el.style.transition = 'transform .4s ease, box-shadow .25s ease'
-    el.style.transform = 'rotateX(0) rotateY(0) scale(1)'
-  }
+  useEffect(() => {
+    if (!el.current) return
+    const typed = new Typed(el.current, {
+      strings: [lyrics.replace(/\n/g, '<br>')], // 換行 → <br>
+      ...TYPED_OPTIONS,
+    })
+    return () => typed.destroy()
+  }, [lyrics])
 
   return (
-    <div className="[perspective:900px]">
-      <div
-        ref={ref}
-        onPointerMove={onMove}
-        onPointerLeave={onLeave}
-        className="bg-card group relative rounded-[20px] px-8 pt-7 pb-[22px] shadow-sm transition-[transform,box-shadow] duration-200 will-change-transform [transform-style:preserve-3d] hover:shadow-[0_18px_40px_-12px_rgba(58,56,53,0.28)]"
-      >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-[20px] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-          style={{
-            background:
-              'radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.45), rgba(255,255,255,0) 55%)',
-          }}
-        />
-        <div className="mx-auto max-w-[30ch] text-left [transform:translateZ(28px)]">
-          <p className="text-card-foreground text-base leading-[1.75] whitespace-pre-line">
-            {lyrics}
-          </p>
-        </div>
-        <p className="text-muted-foreground mt-[22px] text-center text-xs font-bold tracking-[0.12em] uppercase [transform:translateZ(18px)]">
-          {attribution}
+    <div className="bg-card rounded-[20px] px-8 pt-7 pb-[22px] shadow-sm">
+      <div className="mx-auto max-w-[30ch] text-left">
+        <p className="text-card-foreground text-base leading-[1.75]">
+          {/* aria-label 讓螢幕報讀器一次拿到完整歌詞，不必逐字 */}
+          <span ref={el} aria-label={lyrics} />
         </p>
       </div>
+      <p className="text-muted-foreground mt-[22px] text-center text-xs font-bold tracking-[0.12em] uppercase">
+        {attribution}
+      </p>
     </div>
   )
 }

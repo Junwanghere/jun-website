@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import { PlatformIcon } from '@/components/platform-icon'
+import { Tilt } from '@/components/tilt'
 import { PLATFORM_LABEL, type CoverWithLinks } from '@/lib/covers/types'
 import { formatSongTitle } from '@/lib/covers/format'
 
 export function CoverCard({ cover }: { cover: CoverWithLinks }) {
   return (
-    <article className="bg-card relative flex gap-3 rounded-2xl p-3 shadow-sm transition hover:shadow-md md:flex-col md:gap-2">
+    <Tilt
+      max={7}
+      className="bg-card relative flex gap-3 rounded-2xl p-3 shadow-sm transition hover:shadow-md md:flex-col md:gap-2"
+    >
       <div
         className="bg-muted aspect-video w-32 shrink-0 rounded-xl md:w-full"
         style={
@@ -48,6 +52,6 @@ export function CoverCard({ cover }: { cover: CoverWithLinks }) {
           })}
         </div>
       </div>
-    </article>
+    </Tilt>
   )
 }
