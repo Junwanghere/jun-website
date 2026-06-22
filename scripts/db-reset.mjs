@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /**
  * 一鍵把本機 Supabase 重建到一致狀態：
- *   1. supabase db reset  → 套用所有 migration + 跑 supabase/seed.sql
- *   2. pnpm seed:admin    → 冪等建立 admin 帳號
- *   3. pnpm seed:covers   → 灌入 120 首真資料
+ *   1. supabase db reset            → 套用所有 migration + 跑 supabase/seed.sql
+ *   2. pnpm seed:admin              → 冪等建立 admin 帳號
+ *   3. pnpm seed:covers             → 灌入 120 首真資料
+ *   4. pnpm seed:threads-links      → 補上 Threads 平台連結
+ *   5. pnpm seed:threads-descriptions → 補上歌詞片段（description）
  *
  * 任一步失敗即中止並回傳非零 exit code。
  *
@@ -16,6 +18,8 @@ const steps = [
   { label: 'supabase db reset', cmd: 'supabase', args: ['db', 'reset'] },
   { label: 'seed admin', cmd: 'pnpm', args: ['seed:admin'] },
   { label: 'seed covers', cmd: 'pnpm', args: ['seed:covers'] },
+  { label: 'seed threads links', cmd: 'pnpm', args: ['seed:threads-links'] },
+  { label: 'seed threads descriptions', cmd: 'pnpm', args: ['seed:threads-descriptions'] },
 ]
 
 for (const step of steps) {
