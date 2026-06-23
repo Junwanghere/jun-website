@@ -12,7 +12,8 @@ export function ThemeToggle() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [])
-  if (!mounted) return <div className="size-9" />
+  // 佔位尺寸需與下方 size="icon" 按鈕一致（size-8 = 32px），否則 mount 時會位移
+  if (!mounted) return <div className="size-8" />
 
   return (
     <Button

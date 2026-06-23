@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
-import { Inter, Noto_Sans_TC, JetBrains_Mono } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 import { SITE_NAME, SITE_URL } from '@/lib/site'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const notoTC = Noto_Sans_TC({ subsets: ['latin'], variable: '--font-noto-tc' })
-const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono-jb' })
+// 只載入 Inter(拉丁字,小)。中文交給系統字(PingFang TC / JhengHei / 內建 Noto)，
+// 省下約 0.5MB 的 Noto Sans TC web font；JetBrains Mono 原本沒實際套用，一併移除。
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -31,9 +31,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-Hant" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${notoTC.variable} ${mono.variable} antialiased`}
+        className={`${inter.variable} antialiased`}
         style={{
-          fontFamily: 'var(--font-inter), var(--font-noto-tc), system-ui, sans-serif',
+          fontFamily:
+            'var(--font-inter), system-ui, -apple-system, "PingFang TC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif',
         }}
       >
         <ThemeProvider
