@@ -1,9 +1,9 @@
-import Image from 'next/image'
 import { SiInstagram, SiThreads, SiYoutube } from 'react-icons/si'
 import { PortalCard } from '@/components/portal-card'
 import { SocialButton } from '@/components/social-button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { TypedText } from '@/components/typed-text'
+import { CoinFlipAvatar } from '@/components/coin-flip-avatar'
 
 export default function Home() {
   return (
@@ -14,16 +14,7 @@ export default function Home() {
         </div>
 
         <section className="mt-2 text-center">
-          <div className="relative mx-auto size-20 overflow-hidden rounded-full shadow-md">
-            <Image
-              src="/jun-profile.jpg"
-              alt="王嘉駿"
-              fill
-              sizes="80px"
-              className="object-cover"
-              priority
-            />
-          </div>
+          <CoinFlipAvatar />
           <h1 className="mt-3 text-xl font-bold">Jun Wang</h1>
           <p className="text-muted-foreground mt-0.5 text-sm">我是王嘉駿</p>
           <p className="text-muted-foreground/80 mt-2 text-sm">
@@ -37,7 +28,7 @@ export default function Home() {
             <SocialButton href="https://www.threads.net/@juniswang" label="Threads">
               <SiThreads className="size-4" />
             </SocialButton>
-            <SocialButton href="https://youtube.com" label="YouTube">
+            <SocialButton href="https://www.youtube.com/@junwang0917" label="YouTube">
               <SiYoutube className="size-4" />
             </SocialButton>
           </div>

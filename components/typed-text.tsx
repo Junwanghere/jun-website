@@ -5,8 +5,8 @@ import Typed from 'typed.js'
 
 // ▼▼▼ 可自由手調的 typed.js 參數（首頁標語用，獨立於歌詞那組） ▼▼▼
 const TYPED_OPTIONS = {
-  typeSpeed: 80, // 每字間隔(ms)，越小越快
-  startDelay: 500, // 開始前延遲(ms)
+  typeSpeed: 100, // 每字間隔(ms)，越小越快
+  startDelay: 1400, // 開始前延遲(ms)
   showCursor: true, // 顯示游標
   cursorChar: '|', // 游標字元
   loop: false, // 是否循環播放
