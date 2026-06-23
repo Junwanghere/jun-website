@@ -1,6 +1,11 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { LogoutButton } from './logout-button'
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false }, // 後台不被搜尋引擎收錄
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (

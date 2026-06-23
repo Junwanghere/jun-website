@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
@@ -5,10 +6,36 @@ import { getCoverById } from '@/lib/covers/queries'
 import { PLATFORM_LABEL, type Platform } from '@/lib/covers/types'
 import { extractYouTubeId } from '@/lib/youtube'
 import { formatSongTitle } from '@/lib/covers/format'
+import { musicRecordingJsonLd } from '@/lib/seo/jsonld'
 import { LyricsCitation } from '@/components/lyrics-citation'
 import { PlatformIcon } from '@/components/platform-icon'
 
 export const dynamic = 'force-dynamic'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const cover = await getCoverById(id) // cache() 去重，與頁面共用同一次查詢
+  if (!cover) return {}
+  const title = `${formatSongTitle(cover.title)} - ${cover.original_artist}`
+  const description =
+    cover.description?.replace(/\s+/g, ' ').trim().slice(0, 80) ||
+    `王嘉駿翻唱〈${cover.title}〉`
+  return {
+    title,
+    description,
+    alternates: { canonical: `/covers/${id}` },
+    openGraph: {
+      title,
+      description,
+      url: `/covers/${id}`,
+      ...(cover.thumbnail_url ? { images: [cover.thumbnail_url] } : {}),
+    },
+  }
+}
 
 export default async function CoverDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -20,6 +47,10 @@ export default async function CoverDetailPage({ params }: { params: Promise<{ id
 
   return (
     <main className="min-h-dvh px-4 py-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(musicRecordingJsonLd(cover)) }}
+      />
       <div className="mx-auto w-full max-w-[560px]">
         <Link
           href="/covers"

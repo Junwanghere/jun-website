@@ -1,4 +1,5 @@
 import 'server-only'
+import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import type { CoverQuery, CoverWithLinks } from './types'
 
@@ -39,7 +40,8 @@ export async function listCovers(
   return { items, total, hasMore: query.offset + items.length < total }
 }
 
-export async function getCoverById(
+// cache() 讓同一次請求內 generateMetadata 與頁面共用一次查詢（request 範圍去重）
+export const getCoverById = cache(async function getCoverById(
   id: string,
   opts: { includeDrafts?: boolean } = {},
 ): Promise<CoverWithLinks | null> {
@@ -49,7 +51,7 @@ export async function getCoverById(
   const { data, error } = await q.maybeSingle()
   if (error) throw error
   return data as CoverWithLinks | null
-}
+})
 
 export async function getTopOriginalArtists(limit = 3): Promise<string[]> {
   const supabase = await createClient()

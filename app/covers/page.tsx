@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { ArrowLeft } from 'lucide-react'
@@ -10,6 +11,12 @@ import { getTopOriginalArtists } from '@/lib/covers/queries'
 import { parseSearchParams } from '@/lib/covers/search-params'
 
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: '翻唱',
+  description: '王嘉駿翻唱過的歌曲清單。',
+  alternates: { canonical: '/covers' },
+}
 
 type SearchParams = Record<string, string | string[] | undefined>
 

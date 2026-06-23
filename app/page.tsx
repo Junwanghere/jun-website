@@ -4,10 +4,17 @@ import { SocialButton } from '@/components/social-button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { TypedText } from '@/components/typed-text'
 import { CoinFlipAvatar } from '@/components/coin-flip-avatar'
+import { personJsonLd, websiteJsonLd } from '@/lib/seo/jsonld'
 
 export default function Home() {
   return (
     <main className="min-h-dvh px-4 py-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([personJsonLd(), websiteJsonLd()]),
+        }}
+      />
       <div className="mx-auto w-full max-w-[420px]">
         <div className="flex justify-end">
           <ThemeToggle />
