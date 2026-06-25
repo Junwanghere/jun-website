@@ -4,6 +4,7 @@ import { SocialButton } from '@/components/social-button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { TypedText } from '@/components/typed-text'
 import { CoinFlipAvatar } from '@/components/coin-flip-avatar'
+import { SpotifyEmbed } from '@/components/spotify-embed'
 import { personJsonLd, websiteJsonLd } from '@/lib/seo/jsonld'
 
 export default function Home() {
@@ -42,6 +43,7 @@ export default function Home() {
         </section>
 
         <section className="mt-6 flex flex-col gap-3">
+          <SpotifyEmbed playlistId="1u90aXqv6zNOElX2FM06Hi" />
           <PortalCard
             href="/covers"
             label="COVERS"
@@ -57,6 +59,7 @@ export default function Home() {
           />
           <PortalCard href="/work" label="WORK" title="作品集" description="音樂與網頁專案" /> */}
           <PortalCard href="/about" label="ABOUT" title="關於我" description="我是誰" />
+
         </section>
 
         <footer className="text-muted-foreground/70 mt-8 text-center text-xs">© 2026 王嘉駿</footer>
