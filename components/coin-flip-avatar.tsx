@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { prefersReducedMotion } from '@/lib/prefers-reduced-motion'
 
 // ▼▼▼ 可自由手調的翻轉參數 ▼▼▼
 const ENTRANCE_DURATION_MS = 1500 // 進場旋轉時長(ms)
@@ -29,7 +30,7 @@ export function CoinFlipAvatar() {
   const [ready, setReady] = useState(false) // 進場結束才開放點擊翻面
 
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduce = prefersReducedMotion()
     // 下一幀才改角度：非 reduced 觸發 transition 轉進場；reduced 則關 transition 直接定位
     const raf = requestAnimationFrame(() => {
       if (reduce) setAnimate(false)

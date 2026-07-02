@@ -43,7 +43,6 @@ export default function Home() {
         </section>
 
         <section className="mt-6 flex flex-col gap-3">
-          <SpotifyEmbed playlistId="1u90aXqv6zNOElX2FM06Hi" />
           <PortalCard
             href="/covers"
             label="COVERS"
@@ -56,9 +55,10 @@ export default function Home() {
             label="WRITING"
             title="文章 ／ 隨筆"
             description="技術筆記與生活雜記"
-          />
-          <PortalCard href="/work" label="WORK" title="作品集" description="音樂與網頁專案" /> */}
+            />
+            <PortalCard href="/work" label="WORK" title="作品集" description="音樂與網頁專案" /> */}
           <PortalCard href="/about" label="ABOUT" title="關於我" description="我是誰" />
+          <SpotifyEmbed playlistId="1u90aXqv6zNOElX2FM06Hi" />
 
         </section>
 

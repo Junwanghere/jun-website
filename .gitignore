@@ -55,8 +55,9 @@ yarn-error.log*
 !.vscode/extensions.json
 .idea
 
-# playwright mcp
+# playwright mcp / cli
 /.playwright-mcp/
+/.playwright-cli/
 
 # claude code local settings
 .claude/settings.local.json
