@@ -26,8 +26,12 @@ export async function listCovers(
   else if (!opts.includeDrafts) q = q.eq('status', 'published')
 
   if (query.q) {
-    const escaped = query.q.replace(/[%_]/g, '\\$&')
-    q = q.or(`title.ilike.%${escaped}%,original_artist.ilike.%${escaped}%`)
+    // 先移除 PostgREST .or() 過濾字串的結構字元（逗號與括號），否則 q 可注入額外過濾條件；
+    // 再跳脫 LIKE 萬用字元 % _。其餘字元（含 . : 空白、中日文）保留，不影響正常搜尋。
+    const escaped = query.q.replace(/[(),]/g, '').replace(/[%_]/g, '\\$&')
+    if (escaped.trim()) {
+      q = q.or(`title.ilike.%${escaped}%,original_artist.ilike.%${escaped}%`)
+    }
   }
   if (query.artist) q = q.eq('original_artist', query.artist)
   if (query.tag) q = q.contains('tags', [query.tag])

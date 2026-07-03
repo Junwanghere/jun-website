@@ -1,0 +1,47 @@
+# 把 supabase/migrations/ 底下的新 migration 自動套用到「生產」Supabase 專案。
+#
+# 觸發時機：只在 push 到 main（＝PR 合併後）時跑。PR 與 Vercel preview 部署都不會碰生產庫。
+# 人為 gate：migration 進 main 前一定經過 PR，你在那裡看過 SQL——那就是按下去前的最後確認。
+# 事前習慣：先在本機 `pnpm db:reset` 驗過再合併，這個 workflow 只接手最後的機械操作。
+#
+# 需要在 GitHub repo 設定兩個 secret（Settings → Secrets and variables → Actions）：
+#   SUPABASE_ACCESS_TOKEN  個人存取權杖，於 https://supabase.com/dashboard/account/tokens 產生
+#   SUPABASE_DB_PASSWORD   生產專案的資料庫密碼（Dashboard → Project Settings → Database）
+# PROJECT_ID 不是機密（anon key 已含專案資訊），直接寫在下方 env。
+#
+# 高風險的破壞性 schema 改動（drop 欄位、改型別、需要先跑完 migration 才能上新碼）
+# 仍建議手動 `supabase db push`，那種情況你本來就會特別小心，不要靠這條自動化。
+
+name: Deploy DB migrations to production
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**' # 只有 migration 有變動才跑，其餘 push 不觸發
+  workflow_dispatch: {} # 允許在 GitHub Actions 頁面手動觸發
+
+# 同一時間只跑一個，避免兩次 push 併發套 migration 打架。
+concurrency:
+  group: db-migrate-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PROJECT_ID: rianleevqfnyqzuknrvj
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest # 若某次 CLI 更新導致本流程失敗，可改成固定版本號（如 2.101.0）以求穩定
+
+      - name: Link to production project
+        run: supabase link --project-ref "$PROJECT_ID"
+
+      - name: Apply new migrations
+        run: supabase db push

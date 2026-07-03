@@ -2,6 +2,18 @@ import { AUTHOR_NAME, AUTHOR_ALT_NAME, SITE_NAME, SITE_URL, SOCIAL_LINKS } from 
 
 // schema.org 結構化資料 builder（純函式）。輸出物件以 <script type="application/ld+json"> 注入頁面。
 
+/**
+ * 序列化 JSON-LD 供 <script> 內嵌。JSON.stringify 不會跳脫 < > &，若資料含外部/使用者輸入
+ * （如 YouTube 抓來的標題），字串內的 </script> 可提前關閉標籤造成 XSS。這裡把這三個字元
+ * 轉成 unicode 逸出序列，語意不變但無法被瀏覽器當成 HTML 解析。
+ */
+export function serializeJsonLd(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+}
+
 export function personJsonLd() {
   return {
     '@context': 'https://schema.org',
