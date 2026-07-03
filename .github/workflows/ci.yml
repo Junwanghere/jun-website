@@ -1,0 +1,56 @@
+# PR 檢查:每個對 main 的 Pull Request 都要通過這裡的 job 才准合併。
+# 到 GitHub → Settings → Branches 對 main 設 branch protection，把下面兩個 job
+# （test-build、verify-migrations）設為 required status checks，並勾「require a PR before merging」，
+# 就能達成「不經 PR、不過 CI 就進不了 main」。
+#
+# 注意:本檔的 job 全部只在「本機/暫時環境」跑，不碰生產庫、不需要任何 secret。
+# 真正把 migration 套到生產庫的是另一支 db-migrate.yml（merge 進 main 後才跑）。
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # 跑單元測試 + production build。build/test 會在載入時 require 幾個環境變數，
+  # 這裡給的是 Supabase「本機開發」的公開固定預設值（非機密，每台機器都一樣），
+  # 只為了讓 build 不因缺變數而 throw；不連任何真實資料庫。
+  test-build:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH
+      SUPABASE_SERVICE_ROLE_KEY: sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz
+      ADMIN_EMAIL_ALLOWLIST: junwangwrk@gmail.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm build
+
+  # 在全新的本機 Supabase 上套用所有 migration，確認它們能乾淨套用、沒有壞掉的 SQL。
+  # 這道關卡讓「寫壞的 migration」在合併前就被擋下，不會等到 db-migrate.yml 才炸在生產庫。
+  verify-migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start local Supabase (applies migrations on boot)
+        run: supabase start
+      - name: Re-apply migrations from scratch
+        run: supabase db reset
