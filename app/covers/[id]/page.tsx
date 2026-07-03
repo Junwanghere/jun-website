@@ -6,7 +6,7 @@ import { getCoverById } from '@/lib/covers/queries'
 import { PLATFORM_LABEL, type Platform } from '@/lib/covers/types'
 import { extractYouTubeId } from '@/lib/youtube'
 import { formatSongTitle } from '@/lib/covers/format'
-import { musicRecordingJsonLd } from '@/lib/seo/jsonld'
+import { musicRecordingJsonLd, serializeJsonLd } from '@/lib/seo/jsonld'
 import { LyricsCitation } from '@/components/lyrics-citation'
 import { PlatformIcon } from '@/components/platform-icon'
 
@@ -49,7 +49,7 @@ export default async function CoverDetailPage({ params }: { params: Promise<{ id
     <main className="min-h-dvh px-4 py-6">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(musicRecordingJsonLd(cover)) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(musicRecordingJsonLd(cover)) }}
       />
       <div className="mx-auto w-full max-w-[560px]">
         <Link

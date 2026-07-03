@@ -2,10 +2,12 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/auth/require-admin'
 import { coverFormSchema, type CoverFormValues } from '@/lib/covers/schema'
 import { syncYouTubeDrafts } from '@/lib/covers/sync-youtube'
 
 export async function deleteCover(id: string) {
+  await requireAdmin()
   const supabase = await createClient()
   const { error } = await supabase.from('covers').delete().eq('id', id)
   if (error) throw error
@@ -18,6 +20,7 @@ export async function saveCover(input: {
   values: CoverFormValues
   status?: 'draft' | 'published'
 }) {
+  await requireAdmin()
   const parsed = coverFormSchema.safeParse(input.values)
   if (!parsed.success) throw new Error('表單資料不合法')
   const values = parsed.data
@@ -76,6 +79,7 @@ export async function saveCover(input: {
 }
 
 export async function syncDraftsNow() {
+  await requireAdmin()
   const result = await syncYouTubeDrafts()
   revalidatePath('/admin/covers')
   return result

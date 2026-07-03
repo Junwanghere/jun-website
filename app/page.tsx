@@ -5,7 +5,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { TypedText } from '@/components/typed-text'
 import { CoinFlipAvatar } from '@/components/coin-flip-avatar'
 import { SpotifyEmbed } from '@/components/spotify-embed'
-import { personJsonLd, websiteJsonLd } from '@/lib/seo/jsonld'
+import { personJsonLd, websiteJsonLd, serializeJsonLd } from '@/lib/seo/jsonld'
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([personJsonLd(), websiteJsonLd()]),
+          __html: serializeJsonLd([personJsonLd(), websiteJsonLd()]),
         }}
       />
       <div className="mx-auto w-full max-w-[420px]">
